@@ -30,7 +30,7 @@ class Question {
 		//</div>
 	//</div>
 	function outputRightOrWrong() {
-		echo '<div class="row">';
+		echo "<div class=\"row\">";
 		echo '<div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">';
 		echo '<div class="form-group">';
 		echo '<form class="form-group" action="" method="" accept-charset="utf-8" role="form">';
@@ -42,13 +42,14 @@ class Question {
 		echo '</div>';
 		echo '<div class="col-xs-8 col-sm-8 col-md-9 col-lg-10">';
 		echo "<p>$this->question<br>";
-		echo "<sub>Question $this->num in database</sub></p>";
+		echo "<sub>Question $this->num in database</sub>";
+		echo "<sub class=\"text-danger\" id=\"answer1-$this->assign\"></sub></p>";
 		echo '</div>';
 		echo '</div>'."\n";
 	}
 
 	function outputMultipleChoice() {
-		echo '<div class="row">';
+		echo "<div class=\"row\" id=\"question2-$this->assign\">";
 		echo '<div class="col-xs-5 col-sm-5 col-md-4 col-lg-2">';
 		echo '<div class="form-group">';
 		echo '<form class="form-group" action="" method="" accept-charset="utf-8" role="form">';
@@ -61,9 +62,14 @@ class Question {
 		echo '</div>';
 		echo '<div class="col-xs-7 col-sm-7 col-md-8 col-lg-10">';
 		echo "<p>$this->question<br>";
-		echo "<sub>Question $this->num in database</sub></p>";
+		echo "<sub>Question $this->num in database</sub>";
+		echo "<sub class=\"text-danger\" id=\"answer2-$this->assign\"></sub></p>";
 		echo '</div>';
 		echo '</div>'."\n";
+	}
+
+	function getAnswer() {
+		return $this->ans;
 	}
 }
 ?>

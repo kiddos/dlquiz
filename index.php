@@ -9,6 +9,13 @@
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<style type="text/css">
+		#footer {
+			margin-top: 35px;
+			padding: 20px;
+			background-color: #D8D8D8;
+		}
+	</style>
 </head>
 
 <body>
@@ -84,11 +91,16 @@
 		}
 	}
 
-	$section1_qnum = 50;
-	$indexes = generate_random_index($section1_qnum);
+	$section1_qnum = 3;
+	$indexes = generate_random_index(count($questions));
+	$section1_ans = "";
 	for ($i = 0 ; $i < $section1_qnum; $i ++) {
 		$questions[$indexes[$i]]->setAssign($i+1);
 		$questions[$indexes[$i]]->outputRightOrWrong();
+		$section1_ans = $section1_ans.$questions[$indexes[$i]]->getanswer();
+		if ($i != $section1_qnum-1) {
+			$section1_ans = $section1_ans.",";
+		}
 	}
 	?>
 
@@ -135,23 +147,126 @@
 			//echo $line.'<br>';
 		}
 	}
-	$section2_qnum = 50;
-	$indexes = generate_random_index($section1_qnum);
+	$section2_qnum = 3;
+	$indexes = generate_random_index(count($questions2));
+	$section2_ans = "";
 	for ($i = 0 ; $i < $section2_qnum; $i ++) {
 		$questions2[$indexes[$i]]->setAssign($i+1);
 		$questions2[$indexes[$i]]->outputMultipleChoice();
+		$section2_ans = $section2_ans.$questions2[$indexes[$i]]->getanswer();
+		if ($i != $section2_qnum-1) {
+			$section2_ans = $section2_ans.",";
+		}
 	}
 	?>
 
 	<div class="form-group" style="margin-top: 10px">
 		<form action="" accept-charset="utf-8" role="form">
 			<label for="submit" style="margin-right: 10px">Submit Your Answer: </label>
-			<input type="button" name="submit" value="submit" id="submit">
+			<input type="button" value="submit" id="submit" onclick="submitAns()">
 		</form>
 	</div>
 
-	<footer class="footer">
-		<div class="well">
+	<div class="alert alert-danger fade in" id="notdone" style="display: none">
+	</div>
+
+	<script type="text/javascript" charset="utf-8">
+		function checkQuestionDone(section, n) {
+			if (section == 1) {
+				var radios = document.getElementsByName("choice"+n);
+				for (var i = 0 ; i < radios.length ; i ++) {
+					if (radios[i].checked) {
+						return true;
+					}
+				}
+			} else if (section == 2) {
+				var radios = document.getElementsByName("mchoice"+n);
+				for (var i = 0 ; i < radios.length ; i ++) {
+					if (radios[i].checked) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+		function checkSectionDone(section) {
+			for (var i = 0 ; i < <?php echo $section1_qnum; ?> ; i ++) {
+				if (!checkQuestionDone(section, i+1)) {
+					return i+1;
+				}
+			}
+			return 0;
+		}
+		function submitAns() {
+			// set warning tag to invisible at first
+			var warningTag = document.getElementById("notdone");
+			warningTag.style.display = "none";
+
+			var status1 = checkSectionDone(1);
+			var status2 = checkSectionDone(2);
+			if (status1 != 0) {
+				warningTag = document.getElementById("notdone");
+				warningTag.style.display = "";
+				warningTag.innerHTML = "<strong>Submit Failed!</strong>  <i>[Section 1]</i> Question " +
+						status1 + " is not answered";
+			} else if (status2 != 0) {
+				warningTag = document.getElementById("notdone");
+				warningTag.style.display = "";
+				warningTag.innerHTML = "<strong>Submit Failed!</strong>  <i>[Section 2]</i> Question " +
+						status2 + " is not answered";
+			} else {
+				// process section 1
+				var section1_ans = "<?php echo $section1_ans; ?>";
+				var section1_ans_list = section1_ans.split(",");
+				for (var i = 0 ; i < <?php echo $section1_qnum; ?> ; i ++) {
+					var radios = document.getElementsByName("choice"+(i+1));
+					for (var j = 0 ; j < radios.length ; j ++) {
+						if (radios[j].checked) {
+							var correct_answer = section1_ans_list[i];
+							var content = document.getElementById("answer1-"+(i+1)).innerHTML;
+							if (radios[j].value != correct_answer) {
+								document.getElementById("answer1-"+(i+1)).className = "text-danger";
+								content = "<br>wrong! answer: " + correct_answer + "<br>";
+								document.getElementById("answer1-"+(i+1)).innerHTML = content;
+							} else {
+								document.getElementById("answer1-"+(i+1)).className = "text-success";
+								content = "<br>correct! answer: " + correct_answer + "<br>";
+								document.getElementById("answer1-"+(i+1)).innerHTML = content;
+							}
+						}
+					}
+				}
+
+				// process section 2
+				var section2_ans = "<?php echo $section2_ans; ?>";
+				var section2_ans_list = section2_ans.split(",");
+				for (var i = 0 ; i < <?php echo $section2_qnum; ?> ; i ++) {
+					var radios = document.getElementsByName("mchoice"+(i+1));
+					for (var j = 0 ; j < radios.length ; j ++) {
+						if (radios[j].checked) {
+							var correct_answer = section2_ans_list[i];
+							var content = document.getElementById("answer2-"+(i+1)).innerHTML;
+							if (radios[j].value != correct_answer) {
+								document.getElementById("answer2-"+(i+1)).className = "text-danger";
+								content = "<br>wrong! answer: " + correct_answer + "<br>";
+								document.getElementById("answer2-"+(i+1)).innerHTML = content;
+							} else {
+								document.getElementById("answer2-"+(i+1)).className = "text-success";
+								content = "<br>correct! answer: " + correct_answer + "<br>";
+								document.getElementById("answer2-"+(i+1)).innerHTML = content;
+							}
+						}
+					}
+				}
+
+				// sum result
+				// TODO
+			}
+		}
+	</script>
+
+	<footer class="footer" id="footer">
+		<div>
 			Made by Joseph Yu (2015/8/9)
 		</div>
 	</footer>
