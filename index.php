@@ -25,69 +25,121 @@
 	<?php
 	include 'question.php';
 
-	function is_question($line) {
-		$parts = split("\n", $line);
-		foreach ($parts as $part) {
-			$part = str_replace("\n", "", $part);
-			$part = str_replace(" ", "", $part);
-			if (is_numeric($part)) {
-				return true;
+	function generate_random_index($num) {
+		$indexes = array();
+		for ($i = 0 ; $i < $num; $i ++) {
+			$indexes[$i] = $i;
+		}
+		for ($i = 0 ; $i < $num * 3; $i ++) {
+			$index1 = rand(0, $num-1);
+			$index2 = rand(0, $num-1);
+			if ($index1 != $index2) {
+				$temp = $indexes[$index1];
+				$indexes[$index1] = $indexes[$index2];
+				$indexes[$index2] = $temp;
 			}
 		}
-		return false;
+		return $indexes;
 	}
 
 
-	// section 1
 	$file = fopen("./questions/yesno/1.txt", "r");
-	$content = array();
-	$counter = 0;
+	$content = "";
+	$splitstr = "splitting";
 	while (!feof($file)) {
-		$data = trim(stream_get_line($file, 1024, "。"));
+		$data = trim(stream_get_line($file, 1024, "\n"));
 		if ($data == "" || $data == "\n") {
 			continue;
 		}
-		if ($counter != 0) {
-			$data = str_replace("\n", "\t", $data);
-			$start = strpos($data, "\t", 2);
-			$data = substr($data, $start);
-		}
-		$data = trim(str_replace("  ", " ", $data));
-		$data = str_replace("\t", " ", $data);
-		if ($data != null && $data != "" && $data != " " && !is_numeric($data)) {
-			$content[$counter] = $data;
-			$counter ++;
+		$last2 = substr($data, strlen($data)-2);
+		if (is_numeric($last2[0]) && is_numeric($last2[1])) {
+			$content = $content.$data.$splitstr;
+		} else {
+			$content = $content.' '.$data;
 		}
 	}
-
-	for ($i = 0 ; $i < count($content); $i ++) {
-		$index1 = rand(0, count($content)-1);
-		$index2 = rand(0, count($content)-1);
-		if ($index1 != $index2) {
-			$temp = $content[$index1];
-			$content[$index1] = $content[$index2];
-			$content[$index2] = $temp;
-		}
-	}
+	$lines = split($splitstr, $content);
 	$questions = array();
 	$counter = 0;
-	foreach ($content as $line) {
-		$first_space = strpos($line, " ");
-		$num = substr($line, 0, $first_space);
-		$second_space = strpos($line, " ", $first_space+1);
-		$ans = substr($line, $first_space+1, $second_space);
-		$ques = substr($line, $second_space+1);
-		$questions[$counter] = new Question($num, $and, $ques, $counter+1);
-		$counter++;
-		//$questions[$counter-1]->output();
-		//echo $line . '<br>';
-	}
-	unset($content);
+	foreach ($lines as $line) {
+		if ($line != null && $line != "" && $line != " ") {
+			$line = str_replace("\t", "", $line);
+			$line = str_replace("  ", " ", $line);
+			if ($line[0] == " ") {
+				$line = substr($line, 1);
+			}
 
-	// display the question
-	$sec1_question_num = 50;
-	for ($i = 0 ; $i < $sec1_question_num; $i ++) {
-		$questions[$i]->output();
+			$line_data = split(" ", $line);
+			$num = $line_data[0];
+			$ans = $line_data[1];
+			$first_space = strpos($line, " ");
+			$second_space = strpos($line, " ", $first_space+1);
+			$question = substr($line, $second_space+1);
+			$question = substr($question, 0, strlen($question)-2);
+			$question = str_replace(" ", "", $question);
+			$questions[$counter] = new Question($num, $ans, $question);
+			//$questions[$counter]->outputRightOrWrong();
+			$counter ++;
+			//echo $line.'<br>';
+		}
+	}
+
+	$section1_qnum = 50;
+	$indexes = generate_random_index($section1_qnum);
+	for ($i = 0 ; $i < $section1_qnum; $i ++) {
+		$questions[$indexes[$i]]->setAssign($i+1);
+		$questions[$indexes[$i]]->outputRightOrWrong();
+	}
+	?>
+
+	<div class="row" style="padding-bottom: 10px;">
+		<h4 class="col-xs-12">Section 2: Multiple Choice</h4>
+	</div>
+	<?php
+	$file = fopen("./questions/multiple/1.txt", "r");
+	$content = "";
+	while (!feof($file)) {
+		$data = trim(stream_get_line($file, 1024, "\n"));
+		if ($data == "" || $data == "\n") {
+			continue;
+		}
+		$last2 = substr($data, strlen($data)-2);
+		if (is_numeric($last2[0]) && is_numeric($last2[1])) {
+			$content = $content.$data.$splitstr;
+		} else {
+			$content = $content.' '.$data;
+		}
+	}
+
+	$lines = split($splitstr, $content);
+	$counter = 0;
+	$questions2 = array();
+	foreach ($lines as $line) {
+		if ($line != null && $line != "" && $line != " ") {
+			$line = str_replace("\t", "", $line);
+			$line = str_replace("  ", " ", $line);
+			if ($line[0] == " ") {
+				$line = substr($line, 1);
+			}
+			$line_data = split(" ", $line);
+			$num = $line_data[0];
+			$ans = $line_data[1];
+			$first_space = strpos($line, " ");
+			$second_space = strpos($line, " ", $first_space+1);
+			$question = substr($line, $second_space+1);
+			$question = substr($question, 0, strlen($question)-2);
+			$question = str_replace(" ", "", $question);
+			$questions2[$counter] = new Question($num, $ans, $question);
+			//$questions2[$counter]->outputMultipleChoice();
+			$counter ++;
+			//echo $line.'<br>';
+		}
+	}
+	$section2_qnum = 50;
+	$indexes = generate_random_index($section1_qnum);
+	for ($i = 0 ; $i < $section2_qnum; $i ++) {
+		$questions2[$indexes[$i]]->setAssign($i+1);
+		$questions2[$indexes[$i]]->outputMultipleChoice();
 	}
 	?>
 
@@ -97,6 +149,12 @@
 			<input type="button" name="submit" value="submit" id="submit">
 		</form>
 	</div>
+
+	<footer class="footer">
+		<div class="well">
+			Made by Joseph Yu (2015/8/9)
+		</div>
+	</footer>
 </div>
 
 </body>
