@@ -91,7 +91,7 @@
 		}
 	}
 
-	$section1_qnum = 3;
+	$section1_qnum = 10;
 	$indexes = generate_random_index(count($questions));
 	$section1_ans = "";
 	for ($i = 0 ; $i < $section1_qnum; $i ++) {
@@ -147,7 +147,7 @@
 			//echo $line.'<br>';
 		}
 	}
-	$section2_qnum = 3;
+	$section2_qnum = 10;
 	$indexes = generate_random_index(count($questions2));
 	$section2_ans = "";
 	for ($i = 0 ; $i < $section2_qnum; $i ++) {
