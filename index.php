@@ -160,15 +160,16 @@
 	}
 	?>
 
-	<div class="form-group" style="margin-top: 10px">
-		<form action="" accept-charset="utf-8" role="form">
+	<form class="form-inline" action="" accept-charset="utf-8" role="form">
+		<div class="form-group">
 			<label for="submit" style="margin-right: 10px">Submit Your Answer: </label>
 			<input type="button" value="submit" id="submit" onclick="submitAns()">
-		</form>
-	</div>
+		</div>
+	</form>
 
-	<div class="alert alert-danger fade in" id="notdone" style="display: none">
-	</div>
+	<div class="alert alert-danger fade in" id="notdone" style="display: none"></div>
+
+	<p id="score" class="text-success" style="display: none"></p>
 
 	<script type="text/javascript" charset="utf-8">
 		function checkQuestionDone(section, n) {
@@ -200,6 +201,7 @@
 		function submitAns() {
 			// set warning tag to invisible at first
 			var warningTag = document.getElementById("notdone");
+			document.getElementById("score").style.display = "none";
 			warningTag.style.display = "none";
 
 			var status1 = checkSectionDone(1);
@@ -215,9 +217,11 @@
 				warningTag.innerHTML = "<strong>Submit Failed!</strong>  <i>[Section 2]</i> Question " +
 						status2 + " is not answered";
 			} else {
+				// successfully filled out all answers
 				// process section 1
 				var section1_ans = "<?php echo $section1_ans; ?>";
 				var section1_ans_list = section1_ans.split(",");
+				var correct_count1 = 0;
 				for (var i = 0 ; i < <?php echo $section1_qnum; ?> ; i ++) {
 					var radios = document.getElementsByName("choice"+(i+1));
 					for (var j = 0 ; j < radios.length ; j ++) {
@@ -232,6 +236,7 @@
 								document.getElementById("answer1-"+(i+1)).className = "text-success";
 								content = "<br>correct! answer: " + correct_answer + "<br>";
 								document.getElementById("answer1-"+(i+1)).innerHTML = content;
+								correct_count1 ++;
 							}
 						}
 					}
@@ -240,6 +245,7 @@
 				// process section 2
 				var section2_ans = "<?php echo $section2_ans; ?>";
 				var section2_ans_list = section2_ans.split(",");
+				var correct_count2 = 0;
 				for (var i = 0 ; i < <?php echo $section2_qnum; ?> ; i ++) {
 					var radios = document.getElementsByName("mchoice"+(i+1));
 					for (var j = 0 ; j < radios.length ; j ++) {
@@ -254,13 +260,25 @@
 								document.getElementById("answer2-"+(i+1)).className = "text-success";
 								content = "<br>correct! answer: " + correct_answer + "<br>";
 								document.getElementById("answer2-"+(i+1)).innerHTML = content;
+								correct_count1 ++;
 							}
 						}
 					}
 				}
 
 				// sum result
-				// TODO
+				var total_ques = <?php echo $section1_qnum + $section2_qnum;?>;
+				var total_correct = correct_count1 + correct_count2;
+				var score = "score: " + total_correct + "/" + total_ques;
+				document.getElementById("score").innerHTML = score;
+				document.getElementById("score").style.display = "";
+				if (total_correct * 1.0 / total_ques < 0.80) {
+					document.getElementById("score").className = "text-danger";
+					document.getElementById("score").innerHTML += " (Failed)";
+				} else {
+					document.getElementById("score").className = "text-success";
+					document.getElementById("score").innerHTML += " (Passed)";
+				}
 			}
 		}
 	</script>
