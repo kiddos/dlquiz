@@ -9,7 +9,6 @@ class Question {
 		$this->num = $num;
 		$this->ans = $ans;
 		$this->question = $question;
-		$this->assign = $assign;
 	}
 
 	function setAssign($assign) {
