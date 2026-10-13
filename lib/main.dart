@@ -142,7 +142,7 @@ class _QuizPageState extends State<QuizPage> {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
-        crossAxisAlignment: CrossAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Jumbotron style Header
           Container(
@@ -153,7 +153,7 @@ class _QuizPageState extends State<QuizPage> {
               borderRadius: BorderRadius.circular(8.0),
             ),
             child: Column(
-              crossAxisAlignment: CrossAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
                 Text(
                   'Driver License Quiz',
@@ -291,7 +291,7 @@ class _QuizPageState extends State<QuizPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
-        crossAxisAlignment: CrossAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Options column
           SizedBox(
@@ -332,7 +332,7 @@ class _QuizPageState extends State<QuizPage> {
           // Question text and status
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   q.text,
@@ -370,7 +370,7 @@ class _QuizPageState extends State<QuizPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
-        crossAxisAlignment: CrossAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Options column
           SizedBox(
@@ -422,7 +422,7 @@ class _QuizPageState extends State<QuizPage> {
           // Question text and status
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   q.text,
