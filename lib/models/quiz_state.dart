@@ -19,23 +19,42 @@ class QuizState {
     required this.section2Questions,
   });
 
-  factory QuizState.generateQuiz(List<Question> allYesNo, List<Question> allMultiple, {Random? random}) {
+  factory QuizState.generateQuiz(List<Question> allQuestions, [List<Question>? allMultiple, Random? random]) {
     final rng = random ?? Random();
 
-    List<Question> selectRandom(List<Question> source, int count) {
-      final list = List<Question>.from(source);
-      list.shuffle(rng);
-      final selected = list.take(count).toList();
-      for (int i = 0; i < selected.length; i++) {
-        selected[i].assignedIndex = i + 1;
+    if (allMultiple != null) {
+      List<Question> selectRandom(List<Question> source, int count) {
+        final list = List<Question>.from(source);
+        list.shuffle(rng);
+        final selected = list.take(count).toList();
+        for (int i = 0; i < selected.length; i++) {
+          selected[i].assignedIndex = i + 1;
+        }
+        return selected;
       }
-      return selected;
-    }
 
-    return QuizState(
-      section1Questions: selectRandom(allYesNo, 10),
-      section2Questions: selectRandom(allMultiple, 10),
-    );
+      return QuizState(
+        section1Questions: selectRandom(allQuestions, 10),
+        section2Questions: selectRandom(allMultiple, 10),
+      );
+    } else {
+      final list = List<Question>.from(allQuestions);
+      list.shuffle(rng);
+      final count1 = list.length >= 10 ? 10 : list.length ~/ 2;
+      final selected1 = list.take(count1).toList();
+      for (int i = 0; i < selected1.length; i++) {
+        selected1[i].assignedIndex = i + 1;
+      }
+      final count2 = (list.length - count1) >= 10 ? 10 : (list.length - count1);
+      final selected2 = list.skip(count1).take(count2).toList();
+      for (int i = 0; i < selected2.length; i++) {
+        selected2[i].assignedIndex = i + 1;
+      }
+      return QuizState(
+        section1Questions: selected1,
+        section2Questions: selected2,
+      );
+    }
   }
 
   /// Returns 0 if all answered in section, or index of first unanswered question (1-based).

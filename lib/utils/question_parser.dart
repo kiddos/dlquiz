@@ -1,6 +1,16 @@
+import 'dart:convert';
 import '../models/question.dart';
 
 class QuestionParser {
+  static List<Question> parseJsonQuestions(String jsonContent) {
+    // Remove BOM if present
+    if (jsonContent.startsWith('\uFEFF')) {
+      jsonContent = jsonContent.substring(1);
+    }
+    final List<dynamic> decoded = jsonDecode(jsonContent) as List<dynamic>;
+    return decoded.map((e) => Question.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
   static List<Question> parseQuestions(String rawContent, QuestionType type) {
     // Remove BOM if present
     if (rawContent.startsWith('\uFEFF')) {

@@ -5,6 +5,36 @@ import 'package:scooter_driver_license_quiz/models/quiz_state.dart';
 
 void main() {
   group('QuestionParser tests', () {
+    test('Parses JSON questions correctly', () {
+      const sampleJson = '''
+[
+  {
+    "num": 1,
+    "answer": "2",
+    "raw_answer": "(2)",
+    "page": 1,
+    "architecture": "架構一 正確觀念與態度",
+    "text": "（１）禁止任何車輛進入。（２）禁止四輪以上汽車及機車進入。（３）禁止行人通行。",
+    "options": {
+      "1": "禁止任何車輛進入。",
+      "2": "禁止四輪以上汽車及機車進入。",
+      "3": "禁止行人通行。"
+    },
+    "images": [
+      "images/1.png"
+    ]
+  }
+]
+''';
+      final questions = QuestionParser.parseJsonQuestions(sampleJson);
+      expect(questions.length, 1);
+      expect(questions[0].num, '1');
+      expect(questions[0].answer, '2');
+      expect(questions[0].text, '（１）禁止任何車輛進入。（２）禁止四輪以上汽車及機車進入。（３）禁止行人通行。');
+      expect(questions[0].images, ['images/1.png']);
+      expect(questions[0].options['2'], '禁止四輪以上汽車及機車進入。');
+    });
+
     test('Parses yes/no raw text correctly', () {
       const sample = '''
 001 O 超速行駛是肇事最大原因之一。 11

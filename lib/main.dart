@@ -36,8 +36,7 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  List<Question>? _allYesNo;
-  List<Question>? _allMultiple;
+  List<Question>? _allQuestions;
   QuizState? _quizState;
   bool _isLoading = true;
   String? _loadError;
@@ -55,16 +54,12 @@ class _QuizPageState extends State<QuizPage> {
     });
 
     try {
-      final yesNoString = await rootBundle.loadString('questions/yesno/1.txt');
-      final multipleString = await rootBundle.loadString('questions/multiple/1.txt');
-
-      final yesNoQuestions = QuestionParser.parseQuestions(yesNoString, QuestionType.yesNo);
-      final multipleQuestions = QuestionParser.parseQuestions(multipleString, QuestionType.multipleChoice);
+      final jsonString = await rootBundle.loadString('questions/v2/questions.json');
+      final questions = QuestionParser.parseJsonQuestions(jsonString);
 
       setState(() {
-        _allYesNo = yesNoQuestions;
-        _allMultiple = multipleQuestions;
-        _quizState = QuizState.generateQuiz(yesNoQuestions, multipleQuestions);
+        _allQuestions = questions;
+        _quizState = QuizState.generateQuiz(questions);
         _isLoading = false;
       });
     } catch (e) {
@@ -76,9 +71,9 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   void _resetQuiz() {
-    if (_allYesNo != null && _allMultiple != null) {
+    if (_allQuestions != null) {
       setState(() {
-        _quizState = QuizState.generateQuiz(_allYesNo!, _allMultiple!);
+        _quizState = QuizState.generateQuiz(_allQuestions!);
       });
     }
   }
@@ -171,7 +166,7 @@ class _QuizPageState extends State<QuizPage> {
 
           // Section 1 Header
           const Text(
-            'Section 1: Right or Wrong Questions',
+            'Section 1: Multiple Choice Questions',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const Divider(thickness: 1.5),
@@ -181,14 +176,14 @@ class _QuizPageState extends State<QuizPage> {
           ...List.generate(state.section1Questions.length, (index) {
             final q = state.section1Questions[index];
             final qIndex = index + 1;
-            return _buildYesNoQuestionCard(q, qIndex, state);
+            return _buildMultipleChoiceQuestionCard(q, qIndex, state, isSection1: true);
           }),
 
           const SizedBox(height: 20),
 
           // Section 2 Header
           const Text(
-            'Section 2: Multiple Choice',
+            'Section 2: Multiple Choice Questions',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const Divider(thickness: 1.5),
@@ -198,7 +193,7 @@ class _QuizPageState extends State<QuizPage> {
           ...List.generate(state.section2Questions.length, (index) {
             final q = state.section2Questions[index];
             final qIndex = index + 1;
-            return _buildMultipleChoiceQuestionCard(q, qIndex, state);
+            return _buildMultipleChoiceQuestionCard(q, qIndex, state, isSection1: false);
           }),
 
           const SizedBox(height: 20),
@@ -283,87 +278,9 @@ class _QuizPageState extends State<QuizPage> {
     );
   }
 
-  Widget _buildYesNoQuestionCard(Question q, int qIndex, QuizState state) {
-    final selectedAnswer = state.section1UserAnswers[qIndex];
-    final isSubmitted = state.isSubmitted;
-    final isCorrect = selectedAnswer == q.answer;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Options column
-          SizedBox(
-            width: 130,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  '$qIndex. ',
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
-                ),
-                Radio<String>(
-                  value: 'O',
-                  groupValue: selectedAnswer,
-                  visualDensity: VisualDensity.compact,
-                  onChanged: (val) {
-                    setState(() {
-                      state.section1UserAnswers[qIndex] = val!;
-                    });
-                  },
-                ),
-                const Text('O'),
-                Radio<String>(
-                  value: 'X',
-                  groupValue: selectedAnswer,
-                  visualDensity: VisualDensity.compact,
-                  onChanged: (val) {
-                    setState(() {
-                      state.section1UserAnswers[qIndex] = val!;
-                    });
-                  },
-                ),
-                const Text('X'),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          // Question text and status
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  q.text,
-                  style: const TextStyle(fontSize: 15),
-                ),
-                Text(
-                  'Question ${q.num} in database',
-                  style: const TextStyle(fontSize: 12, color: Colors.black54),
-                ),
-                if (isSubmitted)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2.0),
-                    child: Text(
-                      isCorrect ? 'correct! answer: ${q.answer}' : 'wrong! answer: ${q.answer}',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: isCorrect ? const Color(0xFF3C763D) : const Color(0xFFA94442),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMultipleChoiceQuestionCard(Question q, int qIndex, QuizState state) {
-    final selectedAnswer = state.section2UserAnswers[qIndex];
+  Widget _buildMultipleChoiceQuestionCard(Question q, int qIndex, QuizState state, {required bool isSection1}) {
+    final userAnswers = isSection1 ? state.section1UserAnswers : state.section2UserAnswers;
+    final selectedAnswer = userAnswers[qIndex];
     final isSubmitted = state.isSubmitted;
     final isCorrect = selectedAnswer == q.answer;
 
@@ -388,7 +305,7 @@ class _QuizPageState extends State<QuizPage> {
                   visualDensity: VisualDensity.compact,
                   onChanged: (val) {
                     setState(() {
-                      state.section2UserAnswers[qIndex] = val!;
+                      userAnswers[qIndex] = val!;
                     });
                   },
                 ),
@@ -399,7 +316,7 @@ class _QuizPageState extends State<QuizPage> {
                   visualDensity: VisualDensity.compact,
                   onChanged: (val) {
                     setState(() {
-                      state.section2UserAnswers[qIndex] = val!;
+                      userAnswers[qIndex] = val!;
                     });
                   },
                 ),
@@ -410,7 +327,7 @@ class _QuizPageState extends State<QuizPage> {
                   visualDensity: VisualDensity.compact,
                   onChanged: (val) {
                     setState(() {
-                      state.section2UserAnswers[qIndex] = val!;
+                      userAnswers[qIndex] = val!;
                     });
                   },
                 ),
@@ -419,11 +336,27 @@ class _QuizPageState extends State<QuizPage> {
             ),
           ),
           const SizedBox(width: 8),
-          // Question text and status
+          // Question text, images and status
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (q.images.isNotEmpty) ...[
+                  ...q.images.map((imgPath) {
+                    final assetPath = imgPath.startsWith('questions/v2/')
+                        ? imgPath
+                        : 'questions/v2/$imgPath';
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Image.asset(
+                        assetPath,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) =>
+                            Text('[Image failed to load: $assetPath]', style: const TextStyle(color: Colors.red)),
+                      ),
+                    );
+                  }),
+                ],
                 Text(
                   q.text,
                   style: const TextStyle(fontSize: 15),
