@@ -62,7 +62,10 @@ class _QuizPageState extends State<QuizPage> {
     try {
       final jsonString = await rootBundle.loadString(jsonPath);
 
-      final questions = QuestionParser.parseJsonQuestions(jsonString, assetPrefix: assetPrefix);
+      final questions = QuestionParser.parseJsonQuestions(
+        jsonString,
+        assetPrefix: assetPrefix,
+      );
 
       setState(() {
         _allQuestions = questions;
@@ -106,7 +109,7 @@ class _QuizPageState extends State<QuizPage> {
             icon: const Icon(Icons.refresh, color: Colors.white),
             tooltip: 'Restart Quiz',
             onPressed: _resetQuiz,
-          )
+          ),
         ],
       ),
       body: _buildBody(),
@@ -115,9 +118,7 @@ class _QuizPageState extends State<QuizPage> {
 
   Widget _buildBody() {
     if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (_loadError != null) {
@@ -127,7 +128,10 @@ class _QuizPageState extends State<QuizPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(_loadError!, style: const TextStyle(color: Colors.red, fontSize: 16)),
+              Text(
+                _loadError!,
+                style: const TextStyle(color: Colors.red, fontSize: 16),
+              ),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _loadQuestionsAndInitQuiz,
@@ -175,12 +179,21 @@ class _QuizPageState extends State<QuizPage> {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text('Vehicle: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                        const Text(
+                          'Vehicle: ',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                         DropdownButton<String>(
                           value: _selectedVehicle,
                           items: const [
-                            DropdownMenuItem(value: 'motorcycle', child: Text('Motorcycle (機車)')),
-                            DropdownMenuItem(value: 'car', child: Text('Car (汽車)')),
+                            DropdownMenuItem(
+                              value: 'motorcycle',
+                              child: Text('Motorcycle (機車)'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'car',
+                              child: Text('Car (汽車)'),
+                            ),
                           ],
                           onChanged: (val) {
                             if (val != null && val != _selectedVehicle) {
@@ -196,12 +209,21 @@ class _QuizPageState extends State<QuizPage> {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text('Language: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                        const Text(
+                          'Language: ',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                         DropdownButton<String>(
                           value: _selectedLang,
                           items: const [
-                            DropdownMenuItem(value: 'zh', child: Text('Chinese (中文)')),
-                            DropdownMenuItem(value: 'en', child: Text('English')),
+                            DropdownMenuItem(
+                              value: 'zh',
+                              child: Text('Chinese (中文)'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'en',
+                              child: Text('English'),
+                            ),
                           ],
                           onChanged: (val) {
                             if (val != null && val != _selectedLang) {
@@ -279,25 +301,32 @@ class _QuizPageState extends State<QuizPage> {
             const SizedBox(height: 16),
           ],
 
-          Row(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
                 'Submit Your Answer: ',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                onPressed: _submitAnswers,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF337AB7),
-                  foregroundColor: Colors.white,
-                ),
-                child: const Text('submit'),
-              ),
-              const SizedBox(width: 12),
-              OutlinedButton(
-                onPressed: _resetQuiz,
-                child: const Text('Restart'),
+
+              Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: ElevatedButton(
+                      onPressed: _submitAnswers,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF337AB7),
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('submit'),
+                    ),
+                  ),
+                  OutlinedButton(
+                    onPressed: _resetQuiz,
+                    child: const Text('Restart'),
+                  ),
+                ],
               ),
             ],
           ),
@@ -313,7 +342,9 @@ class _QuizPageState extends State<QuizPage> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: state.isPassed ? const Color(0xFF3C763D) : const Color(0xFFA94442),
+                  color: state.isPassed
+                      ? const Color(0xFF3C763D)
+                      : const Color(0xFFA94442),
                 ),
               ),
             ),
@@ -337,8 +368,15 @@ class _QuizPageState extends State<QuizPage> {
     );
   }
 
-  Widget _buildQuestionCard(Question q, int sectionNum, int qIndex, QuizState state) {
-    final userAnswers = sectionNum == 1 ? state.section1UserAnswers : state.section2UserAnswers;
+  Widget _buildQuestionCard(
+    Question q,
+    int sectionNum,
+    int qIndex,
+    QuizState state,
+  ) {
+    final userAnswers = sectionNum == 1
+        ? state.section1UserAnswers
+        : state.section2UserAnswers;
     final selectedAnswer = userAnswers[qIndex];
     final isSubmitted = state.isSubmitted;
     final isCorrect = selectedAnswer == q.answer;
@@ -356,12 +394,18 @@ class _QuizPageState extends State<QuizPage> {
               children: [
                 Text(
                   '$qIndex. ',
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
                 Expanded(
                   child: Text(
                     q.text,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ],
@@ -370,7 +414,11 @@ class _QuizPageState extends State<QuizPage> {
               const SizedBox(height: 4),
               Text(
                 'Architecture: ${q.architecture}',
-                style: const TextStyle(fontSize: 12, color: Colors.black54, fontStyle: FontStyle.italic),
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.black54,
+                  fontStyle: FontStyle.italic,
+                ),
               ),
             ],
             Text(
@@ -392,7 +440,10 @@ class _QuizPageState extends State<QuizPage> {
                       height: 160,
                       fit: BoxFit.contain,
                       errorBuilder: (context, error, stackTrace) {
-                        return Text('Failed to load image: $imgPath', style: const TextStyle(color: Colors.red));
+                        return Text(
+                          'Failed to load image: $imgPath',
+                          style: const TextStyle(color: Colors.red),
+                        );
                       },
                     ),
                   );
@@ -463,7 +514,10 @@ class _QuizPageState extends State<QuizPage> {
                               });
                             },
                           ),
-                          Text('($optKey) ', style: const TextStyle(fontWeight: FontWeight.bold)),
+                          Text(
+                            '($optKey) ',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
                           if (optionText != null && optionText.isNotEmpty)
                             Expanded(
                               child: Text(
@@ -484,11 +538,15 @@ class _QuizPageState extends State<QuizPage> {
             if (isSubmitted) ...[
               const SizedBox(height: 6),
               Text(
-                isCorrect ? 'correct! answer: ${q.answer}' : 'wrong! answer: ${q.answer}',
+                isCorrect
+                    ? 'correct! answer: ${q.answer}'
+                    : 'wrong! answer: ${q.answer}',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color: isCorrect ? const Color(0xFF3C763D) : const Color(0xFFA94442),
+                  color: isCorrect
+                      ? const Color(0xFF3C763D)
+                      : const Color(0xFFA94442),
                 ),
               ),
             ],
