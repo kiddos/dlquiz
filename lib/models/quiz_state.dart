@@ -2,8 +2,8 @@ import 'dart:math';
 import '../models/question.dart';
 
 class QuizState {
-  final List<Question> section1Questions; // 10 yes/no questions
-  final List<Question> section2Questions; // 10 multiple choice questions
+  final List<Question> section1Questions;
+  final List<Question> section2Questions;
 
   // Maps assigned question index (1-based) to user selected answer
   final Map<int, String> section1UserAnswers = {};
@@ -19,23 +19,51 @@ class QuizState {
     required this.section2Questions,
   });
 
-  factory QuizState.generateQuiz(List<Question> allYesNo, List<Question> allMultiple, {Random? random}) {
+  factory QuizState.generateFromQuestions(List<Question> allQuestions, {Random? random}) {
     final rng = random ?? Random();
+    final list = List<Question>.from(allQuestions)..shuffle(rng);
+    final count = min(20, list.length);
+    final selected = list.take(count).toList();
+    final half = (count / 2).ceil();
 
-    List<Question> selectRandom(List<Question> source, int count) {
-      final list = List<Question>.from(source);
-      list.shuffle(rng);
-      final selected = list.take(count).toList();
-      for (int i = 0; i < selected.length; i++) {
-        selected[i].assignedIndex = i + 1;
-      }
-      return selected;
+    final sec1 = selected.sublist(0, half);
+    final sec2 = selected.sublist(half);
+
+    for (int i = 0; i < sec1.length; i++) {
+      sec1[i].assignedIndex = i + 1;
+    }
+    for (int i = 0; i < sec2.length; i++) {
+      sec2[i].assignedIndex = i + 1;
     }
 
     return QuizState(
-      section1Questions: selectRandom(allYesNo, 10),
-      section2Questions: selectRandom(allMultiple, 10),
+      section1Questions: sec1,
+      section2Questions: sec2,
     );
+  }
+
+  factory QuizState.generateQuiz(List<Question> allYesNo, List<Question> allMultiple, {Random? random}) {
+    if (allYesNo.isNotEmpty && allMultiple.isNotEmpty) {
+      final rng = random ?? Random();
+
+      List<Question> selectRandom(List<Question> source, int count) {
+        final list = List<Question>.from(source);
+        list.shuffle(rng);
+        final selected = list.take(count).toList();
+        for (int i = 0; i < selected.length; i++) {
+          selected[i].assignedIndex = i + 1;
+        }
+        return selected;
+      }
+
+      return QuizState(
+        section1Questions: selectRandom(allYesNo, min(10, allYesNo.length)),
+        section2Questions: selectRandom(allMultiple, min(10, allMultiple.length)),
+      );
+    } else {
+      final combined = [...allYesNo, ...allMultiple];
+      return QuizState.generateFromQuestions(combined, random: random);
+    }
   }
 
   /// Returns 0 if all answered in section, or index of first unanswered question (1-based).
