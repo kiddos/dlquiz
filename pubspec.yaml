@@ -58,8 +58,14 @@ flutter:
   uses-material-design: true
 
   assets:
-    - questions/yesno/1.txt
-    - questions/multiple/1.txt
+    - questions/v2/car/zh/questions.json
+    - questions/v2/car/zh/images/
+    - questions/v2/car/en/questions.json
+    - questions/v2/car/en/images/
+    - questions/v2/motorcycle/zh/questions.json
+    - questions/v2/motorcycle/zh/images/
+    - questions/v2/motorcycle/en/questions.json
+    - questions/v2/motorcycle/en/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

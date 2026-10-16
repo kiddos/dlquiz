@@ -36,8 +36,10 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  List<Question>? _allYesNo;
-  List<Question>? _allMultiple;
+  String _selectedVehicle = 'motorcycle'; // 'car' or 'motorcycle'
+  String _selectedLang = 'zh'; // 'zh' or 'en'
+
+  List<Question>? _allQuestions;
   QuizState? _quizState;
   bool _isLoading = true;
   String? _loadError;
@@ -54,31 +56,31 @@ class _QuizPageState extends State<QuizPage> {
       _loadError = null;
     });
 
-    try {
-      final yesNoString = await rootBundle.loadString('questions/yesno/1.txt');
-      final multipleString = await rootBundle.loadString('questions/multiple/1.txt');
+    final assetPrefix = 'questions/v2/$_selectedVehicle/$_selectedLang';
+    final jsonPath = '$assetPrefix/questions.json';
 
-      final yesNoQuestions = QuestionParser.parseQuestions(yesNoString, QuestionType.yesNo);
-      final multipleQuestions = QuestionParser.parseQuestions(multipleString, QuestionType.multipleChoice);
+    try {
+      final jsonString = await rootBundle.loadString(jsonPath);
+
+      final questions = QuestionParser.parseJsonQuestions(jsonString, assetPrefix: assetPrefix);
 
       setState(() {
-        _allYesNo = yesNoQuestions;
-        _allMultiple = multipleQuestions;
-        _quizState = QuizState.generateQuiz(yesNoQuestions, multipleQuestions);
+        _allQuestions = questions;
+        _quizState = QuizState.generateFromQuestions(questions);
         _isLoading = false;
       });
     } catch (e) {
       setState(() {
-        _loadError = 'Failed to load question datasets: $e';
+        _loadError = 'Failed to load question dataset ($jsonPath): $e';
         _isLoading = false;
       });
     }
   }
 
   void _resetQuiz() {
-    if (_allYesNo != null && _allMultiple != null) {
+    if (_allQuestions != null && _allQuestions!.isNotEmpty) {
       setState(() {
-        _quizState = QuizState.generateQuiz(_allYesNo!, _allMultiple!);
+        _quizState = QuizState.generateFromQuestions(_allQuestions!);
       });
     }
   }
@@ -144,7 +146,7 @@ class _QuizPageState extends State<QuizPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Jumbotron style Header
+          // Header & Dataset Selector
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16.0),
@@ -154,15 +156,65 @@ class _QuizPageState extends State<QuizPage> {
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
+              children: [
+                const Text(
                   'Driver License Quiz',
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 4),
-                Text(
-                  'Updated July 2015',
-                  style: TextStyle(fontSize: 16, color: Colors.black54),
+                const SizedBox(height: 4),
+                const Text(
+                  'Driver\'s License Written Test Question Bank',
+                  style: TextStyle(fontSize: 14, color: Colors.black54),
+                ),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 16,
+                  runSpacing: 8,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text('Vehicle: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                        DropdownButton<String>(
+                          value: _selectedVehicle,
+                          items: const [
+                            DropdownMenuItem(value: 'motorcycle', child: Text('Motorcycle (機車)')),
+                            DropdownMenuItem(value: 'car', child: Text('Car (汽車)')),
+                          ],
+                          onChanged: (val) {
+                            if (val != null && val != _selectedVehicle) {
+                              setState(() {
+                                _selectedVehicle = val;
+                              });
+                              _loadQuestionsAndInitQuiz();
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text('Language: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                        DropdownButton<String>(
+                          value: _selectedLang,
+                          items: const [
+                            DropdownMenuItem(value: 'zh', child: Text('Chinese (中文)')),
+                            DropdownMenuItem(value: 'en', child: Text('English')),
+                          ],
+                          onChanged: (val) {
+                            if (val != null && val != _selectedLang) {
+                              setState(() {
+                                _selectedLang = val;
+                              });
+                              _loadQuestionsAndInitQuiz();
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -171,7 +223,7 @@ class _QuizPageState extends State<QuizPage> {
 
           // Section 1 Header
           const Text(
-            'Section 1: Right or Wrong Questions',
+            'Section 1: Questions 1 - 10',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const Divider(thickness: 1.5),
@@ -181,14 +233,14 @@ class _QuizPageState extends State<QuizPage> {
           ...List.generate(state.section1Questions.length, (index) {
             final q = state.section1Questions[index];
             final qIndex = index + 1;
-            return _buildYesNoQuestionCard(q, qIndex, state);
+            return _buildQuestionCard(q, 1, qIndex, state);
           }),
 
           const SizedBox(height: 20),
 
           // Section 2 Header
           const Text(
-            'Section 2: Multiple Choice',
+            'Section 2: Questions 11 - 20',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const Divider(thickness: 1.5),
@@ -198,7 +250,7 @@ class _QuizPageState extends State<QuizPage> {
           ...List.generate(state.section2Questions.length, (index) {
             final q = state.section2Questions[index];
             final qIndex = index + 1;
-            return _buildMultipleChoiceQuestionCard(q, qIndex, state);
+            return _buildQuestionCard(q, 2, qIndex, state);
           }),
 
           const SizedBox(height: 20),
@@ -206,6 +258,7 @@ class _QuizPageState extends State<QuizPage> {
           // Submit controls & Error Alert
           if (state.errorMessage != null) ...[
             Container(
+              key: const Key('error_msg_container'),
               width: double.infinity,
               padding: const EdgeInsets.all(12.0),
               decoration: BoxDecoration(
@@ -215,6 +268,7 @@ class _QuizPageState extends State<QuizPage> {
               ),
               child: Text(
                 state.errorMessage!,
+                key: const Key('error_msg'),
                 style: const TextStyle(
                   color: Color(0xFFA94442),
                   fontSize: 15,
@@ -273,7 +327,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: const EdgeInsets.all(16.0),
             color: const Color(0xFFD8D8D8),
             child: const Text(
-              'Made by Joseph Yu (2015/8/9)',
+              'Made for Driver License Quiz',
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.black87),
             ),
@@ -283,171 +337,163 @@ class _QuizPageState extends State<QuizPage> {
     );
   }
 
-  Widget _buildYesNoQuestionCard(Question q, int qIndex, QuizState state) {
-    final selectedAnswer = state.section1UserAnswers[qIndex];
+  Widget _buildQuestionCard(Question q, int sectionNum, int qIndex, QuizState state) {
+    final userAnswers = sectionNum == 1 ? state.section1UserAnswers : state.section2UserAnswers;
+    final selectedAnswer = userAnswers[qIndex];
     final isSubmitted = state.isSubmitted;
     final isCorrect = selectedAnswer == q.answer;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Options column
-          SizedBox(
-            width: 130,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  '$qIndex. ',
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
-                ),
-                Radio<String>(
-                  value: 'O',
-                  groupValue: selectedAnswer,
-                  visualDensity: VisualDensity.compact,
-                  onChanged: (val) {
-                    setState(() {
-                      state.section1UserAnswers[qIndex] = val!;
-                    });
-                  },
-                ),
-                const Text('O'),
-                Radio<String>(
-                  value: 'X',
-                  groupValue: selectedAnswer,
-                  visualDensity: VisualDensity.compact,
-                  onChanged: (val) {
-                    setState(() {
-                      state.section1UserAnswers[qIndex] = val!;
-                    });
-                  },
-                ),
-                const Text('X'),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          // Question text and status
-          Expanded(
-            child: Column(
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  q.text,
-                  style: const TextStyle(fontSize: 15),
-                ),
-                Text(
-                  'Question ${q.num} in database',
-                  style: const TextStyle(fontSize: 12, color: Colors.black54),
-                ),
-                if (isSubmitted)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2.0),
-                    child: Text(
-                      isCorrect ? 'correct! answer: ${q.answer}' : 'wrong! answer: ${q.answer}',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: isCorrect ? const Color(0xFF3C763D) : const Color(0xFFA94442),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMultipleChoiceQuestionCard(Question q, int qIndex, QuizState state) {
-    final selectedAnswer = state.section2UserAnswers[qIndex];
-    final isSubmitted = state.isSubmitted;
-    final isCorrect = selectedAnswer == q.answer;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Options column
-          SizedBox(
-            width: 170,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
                   '$qIndex. ',
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
-                Radio<String>(
-                  value: '1',
-                  groupValue: selectedAnswer,
-                  visualDensity: VisualDensity.compact,
-                  onChanged: (val) {
-                    setState(() {
-                      state.section2UserAnswers[qIndex] = val!;
-                    });
-                  },
+                Expanded(
+                  child: Text(
+                    q.text,
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
                 ),
-                const Text('1'),
-                Radio<String>(
-                  value: '2',
-                  groupValue: selectedAnswer,
-                  visualDensity: VisualDensity.compact,
-                  onChanged: (val) {
-                    setState(() {
-                      state.section2UserAnswers[qIndex] = val!;
-                    });
-                  },
-                ),
-                const Text('2'),
-                Radio<String>(
-                  value: '3',
-                  groupValue: selectedAnswer,
-                  visualDensity: VisualDensity.compact,
-                  onChanged: (val) {
-                    setState(() {
-                      state.section2UserAnswers[qIndex] = val!;
-                    });
-                  },
-                ),
-                const Text('3'),
               ],
             ),
-          ),
-          const SizedBox(width: 8),
-          // Question text and status
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  q.text,
-                  style: const TextStyle(fontSize: 15),
-                ),
-                Text(
-                  'Question ${q.num} in database',
-                  style: const TextStyle(fontSize: 12, color: Colors.black54),
-                ),
-                if (isSubmitted)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2.0),
-                    child: Text(
-                      isCorrect ? 'correct! answer: ${q.answer}' : 'wrong! answer: ${q.answer}',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: isCorrect ? const Color(0xFF3C763D) : const Color(0xFFA94442),
+            if (q.architecture != null && q.architecture!.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Text(
+                'Architecture: ${q.architecture}',
+                style: const TextStyle(fontSize: 12, color: Colors.black54, fontStyle: FontStyle.italic),
+              ),
+            ],
+            Text(
+              'Question ${q.num} in database',
+              style: const TextStyle(fontSize: 12, color: Colors.black54),
+            ),
+
+            // Display Images if present
+            if (q.images.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: q.images.map((imgPath) {
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(4.0),
+                    child: Image.asset(
+                      imgPath,
+                      height: 160,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Text('Failed to load image: $imgPath', style: const TextStyle(color: Colors.red));
+                      },
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+
+            const SizedBox(height: 8),
+
+            // Options selector
+            if (q.type == QuestionType.yesNo) ...[
+              Row(
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Radio<String>(
+                        value: 'O',
+                        groupValue: selectedAnswer,
+                        onChanged: (val) {
+                          setState(() {
+                            userAnswers[qIndex] = val!;
+                          });
+                        },
+                      ),
+                      const Text('O'),
+                    ],
+                  ),
+                  const SizedBox(width: 16),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Radio<String>(
+                        value: 'X',
+                        groupValue: selectedAnswer,
+                        onChanged: (val) {
+                          setState(() {
+                            userAnswers[qIndex] = val!;
+                          });
+                        },
+                      ),
+                      const Text('X'),
+                    ],
+                  ),
+                ],
+              ),
+            ] else ...[
+              // Multiple Choice Options (1, 2, 3)
+              Column(
+                children: ['1', '2', '3'].map((optKey) {
+                  final optionText = q.options?[optKey];
+                  return InkWell(
+                    onTap: () {
+                      setState(() {
+                        userAnswers[qIndex] = optKey;
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2.0),
+                      child: Row(
+                        children: [
+                          Radio<String>(
+                            value: optKey,
+                            groupValue: selectedAnswer,
+                            onChanged: (val) {
+                              setState(() {
+                                userAnswers[qIndex] = val!;
+                              });
+                            },
+                          ),
+                          Text('($optKey) ', style: const TextStyle(fontWeight: FontWeight.bold)),
+                          if (optionText != null && optionText.isNotEmpty)
+                            Expanded(
+                              child: Text(
+                                optionText,
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                            )
+                          else
+                            Text('Option $optKey'),
+                        ],
                       ),
                     ),
-                  ),
-              ],
-            ),
-          ),
-        ],
+                  );
+                }).toList(),
+              ),
+            ],
+
+            if (isSubmitted) ...[
+              const SizedBox(height: 6),
+              Text(
+                isCorrect ? 'correct! answer: ${q.answer}' : 'wrong! answer: ${q.answer}',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: isCorrect ? const Color(0xFF3C763D) : const Color(0xFFA94442),
+                ),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

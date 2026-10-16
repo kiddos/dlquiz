@@ -47,6 +47,61 @@ void main() {
       expect(questions[1].answer, '1');
       expect(questions[1].text, '防衛駕駛就是(1)能儘力採取合理謹慎行為加以防止車禍發生(2)優良駕駛技術(3)良好生活習慣。');
     });
+
+    test('Parses v2 JSON question format with options and images correctly', () {
+      const sampleJson = '''
+[
+  {
+    "num": 1,
+    "answer": "2",
+    "raw_answer": "(2)",
+    "page": 1,
+    "architecture": "架構一 正確觀念與態度",
+    "text": "(2) （１）禁止任何車輛進入。（２）禁止四輪以上汽車及機車進入。（３）禁止 行人通行。",
+    "options": {
+      "2": "禁止四輪以上汽車及機車進入。",
+      "1": "禁止任何車輛進入。",
+      "3": "禁止 行人通行。"
+    },
+    "images": [
+      "images/1.png"
+    ]
+  },
+  {
+    "num": 4,
+    "answer": "3",
+    "raw_answer": "(3)",
+    "page": 1,
+    "architecture": "架構一 正確觀念與態度",
+    "text": "(3) 當開車進入...",
+    "options": {
+      "3": "提早變換...",
+      "1": "在施工...",
+      "2": "開啟駕駛..."
+    },
+    "images": []
+  }
+]
+''';
+
+      final questions = QuestionParser.parseJsonQuestions(
+        sampleJson,
+        assetPrefix: 'questions/v2/car/zh',
+      );
+
+      expect(questions.length, 2);
+      expect(questions[0].num, '1');
+      expect(questions[0].answer, '2');
+      expect(questions[0].rawAnswer, '(2)');
+      expect(questions[0].page, 1);
+      expect(questions[0].architecture, '架構一 正確觀念與態度');
+      expect(questions[0].options?['2'], '禁止四輪以上汽車及機車進入。');
+      expect(questions[0].images, ['questions/v2/car/zh/images/1.png']);
+
+      expect(questions[1].num, '4');
+      expect(questions[1].answer, '3');
+      expect(questions[1].images, isEmpty);
+    });
   });
 
   group('QuizState tests', () {
@@ -91,6 +146,24 @@ void main() {
       expect(state.totalCorrect, 18); // 10 + 8
       expect(state.totalQuestions, 20);
       expect(state.isPassed, true); // 18/20 = 90% >= 80%
+    });
+
+    test('Generates quiz from single list of json questions', () {
+      final questions = List.generate(
+        25,
+        (i) => Question(
+          num: '${i + 1}',
+          answer: '2',
+          text: 'Question ${i + 1}',
+          options: {'1': 'A', '2': 'B', '3': 'C'},
+          images: i % 2 == 0 ? ['questions/v2/car/zh/images/${i + 1}.png'] : [],
+        ),
+      );
+
+      final state = QuizState.generateFromQuestions(questions);
+      expect(state.section1Questions.length, 10);
+      expect(state.section2Questions.length, 10);
+      expect(state.totalQuestions, 20);
     });
   });
 }
