@@ -1,4 +1,5 @@
 import 'dart:math';
+import '../l10n/app_localizations.dart';
 import '../models/question.dart';
 
 class QuizState {
@@ -80,18 +81,22 @@ class QuizState {
     return 0;
   }
 
-  bool submitAnswers() {
+  bool submitAnswers([AppLocalizations? l10n]) {
     int status1 = checkSectionDone(1);
     int status2 = checkSectionDone(2);
 
     if (status1 != 0) {
-      errorMessage = "Submit Failed! [Section 1] Question $status1 is not answered";
+      errorMessage = l10n != null
+          ? l10n.submitFailedSection1(status1)
+          : "Submit Failed! [Section 1] Question $status1 is not answered";
       isSubmitted = false;
       return false;
     }
 
     if (status2 != 0) {
-      errorMessage = "Submit Failed! [Section 2] Question $status2 is not answered";
+      errorMessage = l10n != null
+          ? l10n.submitFailedSection2(status2)
+          : "Submit Failed! [Section 2] Question $status2 is not answered";
       isSubmitted = false;
       return false;
     }

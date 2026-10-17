@@ -1,0 +1,84 @@
+{
+  "@@locale": "zh",
+  "appTitle": "駕駛執照測驗",
+  "appSubtitle": "駕駛執照筆試題庫",
+  "vehicleLabel": "車型：",
+  "vehicleMotorcycle": "機車",
+  "vehicleCar": "汽車",
+  "languageLabel": "語言：",
+  "languageChinese": "繁體中文",
+  "languageEnglish": "English",
+  "restartQuiz": "重新開始測驗",
+  "restart": "重新開始",
+  "retry": "重試",
+  "section1Title": "第一部分：第 1 - 10 題",
+  "section2Title": "第二部分：第 11 - 20 題",
+  "submitYourAnswer": "提交您的答案：",
+  "submit": "提交",
+  "scoreResult": "得分：{correct}/{total} {status}",
+  "@scoreResult": {
+    "placeholders": {
+      "correct": { "type": "int" },
+      "total": { "type": "int" },
+      "status": { "type": "String" }
+    }
+  },
+  "passed": "(及格)",
+  "failed": "(不及格)",
+  "madeForQuiz": "為駕駛執照測驗而製作",
+  "architecture": "架構：{arch}",
+  "@architecture": {
+    "placeholders": {
+      "arch": { "type": "String" }
+    }
+  },
+  "questionInDatabase": "題庫編號 {num}",
+  "@questionInDatabase": {
+    "placeholders": {
+      "num": { "type": "String" }
+    }
+  },
+  "failedToLoadImage": "載入圖片失敗：{path}",
+  "@failedToLoadImage": {
+    "placeholders": {
+      "path": { "type": "String" }
+    }
+  },
+  "optionLabel": "選項 {key}",
+  "@optionLabel": {
+    "placeholders": {
+      "key": { "type": "String" }
+    }
+  },
+  "correctFeedback": "正確！答案：{answer}",
+  "@correctFeedback": {
+    "placeholders": {
+      "answer": { "type": "String" }
+    }
+  },
+  "wrongFeedback": "錯誤！答案：{answer}",
+  "@wrongFeedback": {
+    "placeholders": {
+      "answer": { "type": "String" }
+    }
+  },
+  "submitFailedSection1": "提交失敗！[第一部分] 第 {qNum} 題未回答",
+  "@submitFailedSection1": {
+    "placeholders": {
+      "qNum": { "type": "int" }
+    }
+  },
+  "submitFailedSection2": "提交失敗！[第二部分] 第 {qNum} 題未回答",
+  "@submitFailedSection2": {
+    "placeholders": {
+      "qNum": { "type": "int" }
+    }
+  },
+  "failedToLoadDataset": "載入題目資料集失敗 ({path}): {error}",
+  "@failedToLoadDataset": {
+    "placeholders": {
+      "path": { "type": "String" },
+      "error": { "type": "String" }
+    }
+  }
+}

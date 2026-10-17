@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'l10n/app_localizations.dart';
 import 'models/question.dart';
 import 'models/quiz_state.dart';
 import 'utils/question_parser.dart';
@@ -8,14 +9,38 @@ void main() {
   runApp(const DriverLicenseQuizApp());
 }
 
-class DriverLicenseQuizApp extends StatelessWidget {
-  const DriverLicenseQuizApp({super.key});
+class DriverLicenseQuizApp extends StatefulWidget {
+  final Locale? initialLocale;
+
+  const DriverLicenseQuizApp({super.key, this.initialLocale});
+
+  @override
+  State<DriverLicenseQuizApp> createState() => _DriverLicenseQuizAppState();
+}
+
+class _DriverLicenseQuizAppState extends State<DriverLicenseQuizApp> {
+  late Locale _locale;
+
+  @override
+  void initState() {
+    super.initState();
+    _locale = widget.initialLocale ?? const Locale('zh');
+  }
+
+  void _setLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Driver License Quiz',
       debugShowCheckedModeBanner: false,
+      locale: _locale,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF337AB7),
@@ -23,13 +48,23 @@ class DriverLicenseQuizApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const QuizPage(),
+      home: QuizPage(
+        currentLocale: _locale,
+        onLocaleChanged: _setLocale,
+      ),
     );
   }
 }
 
 class QuizPage extends StatefulWidget {
-  const QuizPage({super.key});
+  final Locale? currentLocale;
+  final ValueChanged<Locale>? onLocaleChanged;
+
+  const QuizPage({
+    super.key,
+    this.currentLocale,
+    this.onLocaleChanged,
+  });
 
   @override
   State<QuizPage> createState() => _QuizPageState();
@@ -37,7 +72,7 @@ class QuizPage extends StatefulWidget {
 
 class _QuizPageState extends State<QuizPage> {
   String _selectedVehicle = 'motorcycle'; // 'car' or 'motorcycle'
-  String _selectedLang = 'zh'; // 'zh' or 'en'
+  late String _selectedLang; // 'zh' or 'en'
 
   List<Question>? _allQuestions;
   QuizState? _quizState;
@@ -47,7 +82,20 @@ class _QuizPageState extends State<QuizPage> {
   @override
   void initState() {
     super.initState();
+    _selectedLang = widget.currentLocale?.languageCode ?? 'zh';
     _loadQuestionsAndInitQuiz();
+  }
+
+  @override
+  void didUpdateWidget(covariant QuizPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.currentLocale != null &&
+        widget.currentLocale!.languageCode != _selectedLang) {
+      setState(() {
+        _selectedLang = widget.currentLocale!.languageCode;
+      });
+      _loadQuestionsAndInitQuiz();
+    }
   }
 
   Future<void> _loadQuestionsAndInitQuiz() async {
@@ -74,7 +122,7 @@ class _QuizPageState extends State<QuizPage> {
       });
     } catch (e) {
       setState(() {
-        _loadError = 'Failed to load question dataset ($jsonPath): $e';
+        _loadError = '$jsonPath: $e';
         _isLoading = false;
       });
     }
@@ -90,33 +138,36 @@ class _QuizPageState extends State<QuizPage> {
 
   void _submitAnswers() {
     if (_quizState == null) return;
+    final l10n = AppLocalizations.of(context);
     setState(() {
-      _quizState!.submitAnswers();
+      _quizState!.submitAnswers(l10n);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Driver License Quiz',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        title: Text(
+          l10n?.appTitle ?? 'Driver License Quiz',
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: const Color(0xFF337AB7),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh, color: Colors.white),
-            tooltip: 'Restart Quiz',
+            tooltip: l10n?.restartQuiz ?? 'Restart Quiz',
             onPressed: _resetQuiz,
           ),
         ],
       ),
-      body: _buildBody(),
+      body: _buildBody(l10n),
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(AppLocalizations? l10n) {
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -129,13 +180,13 @@ class _QuizPageState extends State<QuizPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                _loadError!,
+                l10n?.failedToLoadDataset(_loadError!, '') ?? _loadError!,
                 style: const TextStyle(color: Colors.red, fontSize: 16),
               ),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _loadQuestionsAndInitQuiz,
-                child: const Text('Retry'),
+                child: Text(l10n?.retry ?? 'Retry'),
               ),
             ],
           ),
@@ -161,14 +212,14 @@ class _QuizPageState extends State<QuizPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Driver License Quiz',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                Text(
+                  l10n?.appTitle ?? 'Driver License Quiz',
+                  style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
-                const Text(
-                  'Driver\'s License Written Test Question Bank',
-                  style: TextStyle(fontSize: 14, color: Colors.black54),
+                Text(
+                  l10n?.appSubtitle ?? 'Driver\'s License Written Test Question Bank',
+                  style: const TextStyle(fontSize: 14, color: Colors.black54),
                 ),
                 const SizedBox(height: 12),
                 Wrap(
@@ -179,20 +230,20 @@ class _QuizPageState extends State<QuizPage> {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text(
-                          'Vehicle: ',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                        Text(
+                          l10n?.vehicleLabel ?? 'Vehicle: ',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         DropdownButton<String>(
                           value: _selectedVehicle,
-                          items: const [
+                          items: [
                             DropdownMenuItem(
                               value: 'motorcycle',
-                              child: Text('Motorcycle (機車)'),
+                              child: Text(l10n?.vehicleMotorcycle ?? 'Motorcycle'),
                             ),
                             DropdownMenuItem(
                               value: 'car',
-                              child: Text('Car (汽車)'),
+                              child: Text(l10n?.vehicleCar ?? 'Car'),
                             ),
                           ],
                           onChanged: (val) {
@@ -209,20 +260,20 @@ class _QuizPageState extends State<QuizPage> {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text(
-                          'Language: ',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                        Text(
+                          l10n?.languageLabel ?? 'Language: ',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         DropdownButton<String>(
                           value: _selectedLang,
-                          items: const [
+                          items: [
                             DropdownMenuItem(
                               value: 'zh',
-                              child: Text('Chinese (中文)'),
+                              child: Text(l10n?.languageChinese ?? 'Traditional Chinese'),
                             ),
                             DropdownMenuItem(
                               value: 'en',
-                              child: Text('English'),
+                              child: Text(l10n?.languageEnglish ?? 'English'),
                             ),
                           ],
                           onChanged: (val) {
@@ -230,6 +281,7 @@ class _QuizPageState extends State<QuizPage> {
                               setState(() {
                                 _selectedLang = val;
                               });
+                              widget.onLocaleChanged?.call(Locale(val));
                               _loadQuestionsAndInitQuiz();
                             }
                           },
@@ -244,9 +296,9 @@ class _QuizPageState extends State<QuizPage> {
           const SizedBox(height: 20),
 
           // Section 1 Header
-          const Text(
-            'Section 1: Questions 1 - 10',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Text(
+            l10n?.section1Title ?? 'Section 1: Questions 1 - 10',
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const Divider(thickness: 1.5),
           const SizedBox(height: 8),
@@ -255,15 +307,15 @@ class _QuizPageState extends State<QuizPage> {
           ...List.generate(state.section1Questions.length, (index) {
             final q = state.section1Questions[index];
             final qIndex = index + 1;
-            return _buildQuestionCard(q, 1, qIndex, state);
+            return _buildQuestionCard(q, 1, qIndex, state, l10n);
           }),
 
           const SizedBox(height: 20),
 
           // Section 2 Header
-          const Text(
-            'Section 2: Questions 11 - 20',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Text(
+            l10n?.section2Title ?? 'Section 2: Questions 11 - 20',
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const Divider(thickness: 1.5),
           const SizedBox(height: 8),
@@ -272,7 +324,7 @@ class _QuizPageState extends State<QuizPage> {
           ...List.generate(state.section2Questions.length, (index) {
             final q = state.section2Questions[index];
             final qIndex = index + 1;
-            return _buildQuestionCard(q, 2, qIndex, state);
+            return _buildQuestionCard(q, 2, qIndex, state, l10n);
           }),
 
           const SizedBox(height: 20),
@@ -304,9 +356,9 @@ class _QuizPageState extends State<QuizPage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Submit Your Answer: ',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              Text(
+                l10n?.submitYourAnswer ?? 'Submit Your Answer: ',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
 
               Row(
@@ -319,12 +371,12 @@ class _QuizPageState extends State<QuizPage> {
                         backgroundColor: const Color(0xFF337AB7),
                         foregroundColor: Colors.white,
                       ),
-                      child: const Text('submit'),
+                      child: Text(l10n?.submit ?? 'submit'),
                     ),
                   ),
                   OutlinedButton(
                     onPressed: _resetQuiz,
-                    child: const Text('Restart'),
+                    child: Text(l10n?.restart ?? 'Restart'),
                   ),
                 ],
               ),
@@ -338,7 +390,13 @@ class _QuizPageState extends State<QuizPage> {
               width: double.infinity,
               padding: const EdgeInsets.all(12.0),
               child: Text(
-                'score: ${state.totalCorrect}/${state.totalQuestions} ${state.isPassed ? "(Passed)" : "(Failed)"}',
+                l10n != null
+                    ? l10n.scoreResult(
+                        state.totalCorrect,
+                        state.totalQuestions,
+                        state.isPassed ? l10n.passed : l10n.failed,
+                      )
+                    : 'score: ${state.totalCorrect}/${state.totalQuestions} ${state.isPassed ? "(Passed)" : "(Failed)"}',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -357,10 +415,10 @@ class _QuizPageState extends State<QuizPage> {
             width: double.infinity,
             padding: const EdgeInsets.all(16.0),
             color: const Color(0xFFD8D8D8),
-            child: const Text(
-              'Made for Driver License Quiz',
+            child: Text(
+              l10n?.madeForQuiz ?? 'Made for Driver License Quiz',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black87),
+              style: const TextStyle(color: Colors.black87),
             ),
           ),
         ],
@@ -373,6 +431,7 @@ class _QuizPageState extends State<QuizPage> {
     int sectionNum,
     int qIndex,
     QuizState state,
+    AppLocalizations? l10n,
   ) {
     final userAnswers = sectionNum == 1
         ? state.section1UserAnswers
@@ -413,7 +472,7 @@ class _QuizPageState extends State<QuizPage> {
             if (q.architecture != null && q.architecture!.isNotEmpty) ...[
               const SizedBox(height: 4),
               Text(
-                'Architecture: ${q.architecture}',
+                l10n?.architecture(q.architecture!) ?? 'Architecture: ${q.architecture}',
                 style: const TextStyle(
                   fontSize: 12,
                   color: Colors.black54,
@@ -422,7 +481,7 @@ class _QuizPageState extends State<QuizPage> {
               ),
             ],
             Text(
-              'Question ${q.num} in database',
+              l10n?.questionInDatabase(q.num) ?? 'Question ${q.num} in database',
               style: const TextStyle(fontSize: 12, color: Colors.black54),
             ),
 
@@ -441,7 +500,7 @@ class _QuizPageState extends State<QuizPage> {
                       fit: BoxFit.contain,
                       errorBuilder: (context, error, stackTrace) {
                         return Text(
-                          'Failed to load image: $imgPath',
+                          l10n?.failedToLoadImage(imgPath) ?? 'Failed to load image: $imgPath',
                           style: const TextStyle(color: Colors.red),
                         );
                       },
@@ -526,7 +585,7 @@ class _QuizPageState extends State<QuizPage> {
                               ),
                             )
                           else
-                            Text('Option $optKey'),
+                            Text(l10n?.optionLabel(optKey) ?? 'Option $optKey'),
                         ],
                       ),
                     ),
@@ -539,8 +598,8 @@ class _QuizPageState extends State<QuizPage> {
               const SizedBox(height: 6),
               Text(
                 isCorrect
-                    ? 'correct! answer: ${q.answer}'
-                    : 'wrong! answer: ${q.answer}',
+                    ? (l10n?.correctFeedback(q.answer) ?? 'correct! answer: ${q.answer}')
+                    : (l10n?.wrongFeedback(q.answer) ?? 'wrong! answer: ${q.answer}'),
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,

@@ -1,0 +1,84 @@
+{
+  "@@locale": "en",
+  "appTitle": "Driver License Quiz",
+  "appSubtitle": "Driver's License Written Test Question Bank",
+  "vehicleLabel": "Vehicle: ",
+  "vehicleMotorcycle": "Motorcycle",
+  "vehicleCar": "Car",
+  "languageLabel": "Language: ",
+  "languageChinese": "Traditional Chinese",
+  "languageEnglish": "English",
+  "restartQuiz": "Restart Quiz",
+  "restart": "Restart",
+  "retry": "Retry",
+  "section1Title": "Section 1: Questions 1 - 10",
+  "section2Title": "Section 2: Questions 11 - 20",
+  "submitYourAnswer": "Submit Your Answer: ",
+  "submit": "submit",
+  "scoreResult": "score: {correct}/{total} {status}",
+  "@scoreResult": {
+    "placeholders": {
+      "correct": { "type": "int" },
+      "total": { "type": "int" },
+      "status": { "type": "String" }
+    }
+  },
+  "passed": "(Passed)",
+  "failed": "(Failed)",
+  "madeForQuiz": "Made for Driver License Quiz",
+  "architecture": "Architecture: {arch}",
+  "@architecture": {
+    "placeholders": {
+      "arch": { "type": "String" }
+    }
+  },
+  "questionInDatabase": "Question {num} in database",
+  "@questionInDatabase": {
+    "placeholders": {
+      "num": { "type": "String" }
+    }
+  },
+  "failedToLoadImage": "Failed to load image: {path}",
+  "@failedToLoadImage": {
+    "placeholders": {
+      "path": { "type": "String" }
+    }
+  },
+  "optionLabel": "Option {key}",
+  "@optionLabel": {
+    "placeholders": {
+      "key": { "type": "String" }
+    }
+  },
+  "correctFeedback": "correct! answer: {answer}",
+  "@correctFeedback": {
+    "placeholders": {
+      "answer": { "type": "String" }
+    }
+  },
+  "wrongFeedback": "wrong! answer: {answer}",
+  "@wrongFeedback": {
+    "placeholders": {
+      "answer": { "type": "String" }
+    }
+  },
+  "submitFailedSection1": "Submit Failed! [Section 1] Question {qNum} is not answered",
+  "@submitFailedSection1": {
+    "placeholders": {
+      "qNum": { "type": "int" }
+    }
+  },
+  "submitFailedSection2": "Submit Failed! [Section 2] Question {qNum} is not answered",
+  "@submitFailedSection2": {
+    "placeholders": {
+      "qNum": { "type": "int" }
+    }
+  },
+  "failedToLoadDataset": "Failed to load question dataset ({path}): {error}",
+  "@failedToLoadDataset": {
+    "placeholders": {
+      "path": { "type": "String" },
+      "error": { "type": "String" }
+    }
+  }
+}
