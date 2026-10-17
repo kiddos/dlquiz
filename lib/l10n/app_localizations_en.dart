@@ -111,4 +111,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String failedToLoadDataset(String path, String error) {
     return 'Failed to load question dataset ($path): $error';
   }
+
+  @override
+  String get startQuiz => 'Start Quiz';
+
+  @override
+  String get reviewWrongQuestions => 'Review Wrong Questions';
+
+  @override
+  String get reviewPageTitle => 'Review Wrong Questions';
+
+  @override
+  String get selectVehicleAndLanguage => 'Select Vehicle and Language';
+
+  @override
+  String get pressEnterToStart => 'Press Enter or click below to start quiz';
+
+  @override
+  String userAnswerLabel(String answer) {
+    return 'Your wrong answer: $answer';
+  }
+
+  @override
+  String get clearWrongQuestions => 'Clear Wrong Questions';
+
+  @override
+  String get noWrongQuestionsFound => 'No wrong questions found.';
+
+  @override
+  String get backToSelection => 'Back to Selection';
+
+  @override
+  String get backToQuiz => 'Back to Quiz';
 }

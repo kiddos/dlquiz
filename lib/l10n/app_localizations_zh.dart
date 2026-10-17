@@ -111,4 +111,36 @@ class AppLocalizationsZh extends AppLocalizations {
   String failedToLoadDataset(String path, String error) {
     return '載入題目資料集失敗 ($path): $error';
   }
+
+  @override
+  String get startQuiz => '開始測驗';
+
+  @override
+  String get reviewWrongQuestions => '複習錯題';
+
+  @override
+  String get reviewPageTitle => '錯題複習';
+
+  @override
+  String get selectVehicleAndLanguage => '選擇車型與語言';
+
+  @override
+  String get pressEnterToStart => '按下 Enter 或點擊下方按鈕開始測驗';
+
+  @override
+  String userAnswerLabel(String answer) {
+    return '您的錯誤答案：$answer';
+  }
+
+  @override
+  String get clearWrongQuestions => '清除錯題紀錄';
+
+  @override
+  String get noWrongQuestionsFound => '尚無錯題紀錄。';
+
+  @override
+  String get backToSelection => '返回選擇頁';
+
+  @override
+  String get backToQuiz => '返回測驗';
 }
