@@ -80,5 +80,20 @@
       "path": { "type": "String" },
       "error": { "type": "String" }
     }
-  }
+  },
+  "startQuiz": "Start Quiz",
+  "reviewWrongQuestions": "Review Wrong Questions",
+  "reviewPageTitle": "Review Wrong Questions",
+  "selectVehicleAndLanguage": "Select Vehicle and Language",
+  "pressEnterToStart": "Press Enter or click below to start quiz",
+  "userAnswerLabel": "Your wrong answer: {answer}",
+  "@userAnswerLabel": {
+    "placeholders": {
+      "answer": { "type": "String" }
+    }
+  },
+  "clearWrongQuestions": "Clear Wrong Questions",
+  "noWrongQuestionsFound": "No wrong questions found.",
+  "backToSelection": "Back to Selection",
+  "backToQuiz": "Back to Quiz"
 }

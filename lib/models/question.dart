@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 enum QuestionType { yesNo, multipleChoice }
 
 class Question {
@@ -65,6 +67,67 @@ class Question {
       architecture: archVal,
       text: textVal,
       options: optionsMap.isNotEmpty ? optionsMap : null,
+      images: imageList,
+      type: qType,
+    );
+  }
+
+  Map<String, dynamic> toDbMap({required String vehicle, required String lang, String? userAnswer}) {
+    return {
+      'vehicle': vehicle,
+      'lang': lang,
+      'num': num,
+      'answer': answer,
+      'raw_answer': rawAnswer,
+      'page': page,
+      'architecture': architecture,
+      'text': text,
+      'options': options != null ? jsonEncode(options) : null,
+      'images': jsonEncode(images),
+      'type': type.name,
+      'user_answer': userAnswer,
+    };
+  }
+
+  factory Question.fromDbMap(Map<String, dynamic> map) {
+    Map<String, String>? optionsMap;
+    if (map['options'] != null && map['options'].toString().isNotEmpty) {
+      try {
+        final decoded = jsonDecode(map['options'].toString());
+        if (decoded is Map) {
+          optionsMap = {};
+          decoded.forEach((k, v) {
+            optionsMap![k.toString()] = v.toString();
+          });
+        }
+      } catch (_) {}
+    }
+
+    List<String> imageList = [];
+    if (map['images'] != null && map['images'].toString().isNotEmpty) {
+      try {
+        final decoded = jsonDecode(map['images'].toString());
+        if (decoded is List) {
+          imageList = decoded.map((e) => e.toString()).toList();
+        }
+      } catch (_) {}
+    }
+
+    QuestionType qType = QuestionType.multipleChoice;
+    final typeStr = map['type']?.toString();
+    final ansStr = map['answer']?.toString();
+    if (typeStr == 'yesNo' || ansStr == 'O' || ansStr == 'X') {
+      qType = QuestionType.yesNo;
+    }
+
+    return Question(
+      num: map['num']?.toString() ?? '',
+      answer: ansStr ?? '',
+      rawAnswer: map['raw_answer']?.toString(),
+      page: map['page'] as int?,
+      architecture: map['architecture']?.toString(),
+      text: map['text']?.toString() ?? '',
+      options: optionsMap,
       images: imageList,
       type: qType,
     );
