@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:scooter_driver_license_quiz/l10n/app_localizations_en.dart';
+import 'package:scooter_driver_license_quiz/l10n/app_localizations_zh.dart';
 import 'package:scooter_driver_license_quiz/models/question.dart';
 import 'package:scooter_driver_license_quiz/utils/question_parser.dart';
 import 'package:scooter_driver_license_quiz/models/quiz_state.dart';
@@ -105,7 +107,7 @@ void main() {
   });
 
   group('QuizState tests', () {
-    test('Handles uncompleted questions and calculates scores correctly', () {
+    test('Handles uncompleted questions and calculates scores correctly with l10n', () {
       final yesNoList = List.generate(
         15,
         (i) => Question(num: '${i + 1}', answer: 'O', text: 'Q${i + 1}', type: QuestionType.yesNo),
@@ -119,19 +121,26 @@ void main() {
       expect(state.section1Questions.length, 10);
       expect(state.section2Questions.length, 10);
 
-      // Attempt submit without answers
-      bool success = state.submitAnswers();
+      // Attempt submit without answers (English l10n)
+      final l10nEn = AppLocalizationsEn();
+      bool success = state.submitAnswers(l10nEn);
       expect(success, false);
-      expect(state.errorMessage, contains('[Section 1] Question 1 is not answered'));
+      expect(state.errorMessage, contains('Submit Failed! [Section 1] Question 1 is not answered'));
+
+      // Attempt submit without answers (Chinese l10n)
+      final l10nZh = AppLocalizationsZh();
+      success = state.submitAnswers(l10nZh);
+      expect(success, false);
+      expect(state.errorMessage, contains('提交失敗！[第一部分] 第 1 題未回答'));
 
       // Fill section 1 answers
       for (int i = 1; i <= 10; i++) {
         state.section1UserAnswers[i] = 'O';
       }
 
-      success = state.submitAnswers();
+      success = state.submitAnswers(l10nZh);
       expect(success, false);
-      expect(state.errorMessage, contains('[Section 2] Question 1 is not answered'));
+      expect(state.errorMessage, contains('提交失敗！[第二部分] 第 1 題未回答'));
 
       // Fill section 2 answers (8 correct, 2 wrong)
       for (int i = 1; i <= 8; i++) {
@@ -140,7 +149,7 @@ void main() {
       state.section2UserAnswers[9] = '2';
       state.section2UserAnswers[10] = '2';
 
-      success = state.submitAnswers();
+      success = state.submitAnswers(l10nZh);
       expect(success, true);
       expect(state.errorMessage, isNull);
       expect(state.totalCorrect, 18); // 10 + 8
