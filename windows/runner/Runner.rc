@@ -89,11 +89,11 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example.scooterquiz" "\0"
+            VALUE "CompanyName", "app.kiddos" "\0"
             VALUE "FileDescription", "scooter_driver_license_quiz" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "scooter_driver_license_quiz" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.example.scooterquiz. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 app.kiddos. All rights reserved." "\0"
             VALUE "OriginalFilename", "scooter_driver_license_quiz.exe" "\0"
             VALUE "ProductName", "scooter_driver_license_quiz" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"

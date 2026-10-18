@@ -1,4 +1,4 @@
-package com.example.scooterquiz.scooter_driver_license_quiz
+package app.kiddos.dlquiz
 
 import io.flutter.embedding.android.FlutterActivity
 
