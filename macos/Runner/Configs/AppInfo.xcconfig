@@ -8,7 +8,7 @@
 PRODUCT_NAME = scooter_driver_license_quiz
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.scooterquiz.scooterDriverLicenseQuiz
+PRODUCT_BUNDLE_IDENTIFIER = app.kiddos.dlquiz
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2026 com.example.scooterquiz. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2026 app.kiddos. All rights reserved.
