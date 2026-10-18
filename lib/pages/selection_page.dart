@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/database_helper.dart';
+import '../widgets/ad_banner.dart';
 import 'quiz_page.dart';
 import 'review_page.dart';
 
@@ -112,6 +113,7 @@ class _SelectionPageState extends State<SelectionPage> {
             ),
             backgroundColor: const Color(0xFF337AB7),
           ),
+          bottomNavigationBar: const AdBanner(),
           body: Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(24.0),

@@ -3,6 +3,7 @@ import '../l10n/app_localizations.dart';
 import '../models/question.dart';
 import '../models/wrong_question_record.dart';
 import '../utils/database_helper.dart';
+import '../widgets/ad_banner.dart';
 
 class ReviewPage extends StatefulWidget {
   final Locale? currentLocale;
@@ -92,6 +93,7 @@ class _ReviewPageState extends State<ReviewPage> {
             ),
         ],
       ),
+      bottomNavigationBar: const AdBanner(),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _records.isEmpty

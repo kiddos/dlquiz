@@ -5,6 +5,7 @@ import '../models/question.dart';
 import '../models/quiz_state.dart';
 import '../utils/database_helper.dart';
 import '../utils/question_parser.dart';
+import '../widgets/ad_banner.dart';
 
 class QuizPage extends StatefulWidget {
   final String selectedVehicle;
@@ -153,6 +154,7 @@ class _QuizPageState extends State<QuizPage> {
           ),
         ],
       ),
+      bottomNavigationBar: const AdBanner(),
       body: _buildBody(l10n),
     );
   }
