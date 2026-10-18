@@ -265,6 +265,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to load question dataset ({path}): {error}'**
   String failedToLoadDataset(String path, String error);
+
+  /// No description provided for @startQuiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Quiz'**
+  String get startQuiz;
+
+  /// No description provided for @reviewWrongQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Review Wrong Questions'**
+  String get reviewWrongQuestions;
+
+  /// No description provided for @reviewPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review Wrong Questions'**
+  String get reviewPageTitle;
+
+  /// No description provided for @selectVehicleAndLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Vehicle and Language'**
+  String get selectVehicleAndLanguage;
+
+  /// No description provided for @pressEnterToStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Press Enter or click below to start quiz'**
+  String get pressEnterToStart;
+
+  /// No description provided for @userAnswerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Your wrong answer: {answer}'**
+  String userAnswerLabel(String answer);
+
+  /// No description provided for @clearWrongQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Wrong Questions'**
+  String get clearWrongQuestions;
+
+  /// No description provided for @noWrongQuestionsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No wrong questions found.'**
+  String get noWrongQuestionsFound;
+
+  /// No description provided for @backToSelection.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Selection'**
+  String get backToSelection;
+
+  /// No description provided for @backToQuiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Quiz'**
+  String get backToQuiz;
 }
 
 class _AppLocalizationsDelegate
