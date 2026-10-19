@@ -9,10 +9,10 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
-  String get appTitle => '駕駛執照測驗';
+  String get appTitle => '駕照筆試題庫';
 
   @override
-  String get appSubtitle => '駕駛執照筆試題庫';
+  String get appSubtitle => '機車與汽車考照測驗';
 
   @override
   String get vehicleLabel => '車型：';

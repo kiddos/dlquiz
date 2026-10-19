@@ -1,6 +1,6 @@
 {
-    "name": "scooter_driver_license_quiz",
-    "short_name": "scooter_driver_license_quiz",
+    "name": "駕照筆試題庫 - 機車與汽車考照測驗",
+    "short_name": "駕照筆試",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

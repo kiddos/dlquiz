@@ -37,7 +37,8 @@ class _DriverLicenseQuizAppState extends State<DriverLicenseQuizApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '台灣駕照小測驗',
+      onGenerateTitle: (context) =>
+          AppLocalizations.of(context)?.appTitle ?? '駕照筆試題庫',
       debugShowCheckedModeBanner: false,
       locale: _locale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,

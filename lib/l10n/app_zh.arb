@@ -1,7 +1,7 @@
 {
   "@@locale": "zh",
-  "appTitle": "駕駛執照測驗",
-  "appSubtitle": "駕駛執照筆試題庫",
+  "appTitle": "駕照筆試題庫",
+  "appSubtitle": "機車與汽車考照測驗",
   "vehicleLabel": "車型：",
   "vehicleMotorcycle": "機車",
   "vehicleCar": "汽車",
