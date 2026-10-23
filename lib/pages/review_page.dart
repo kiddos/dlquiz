@@ -9,11 +9,7 @@ class ReviewPage extends StatefulWidget {
   final Locale? currentLocale;
   final ValueChanged<Locale>? onLocaleChanged;
 
-  const ReviewPage({
-    super.key,
-    this.currentLocale,
-    this.onLocaleChanged,
-  });
+  const ReviewPage({super.key, this.currentLocale, this.onLocaleChanged});
 
   @override
   State<ReviewPage> createState() => _ReviewPageState();
@@ -81,7 +77,10 @@ class _ReviewPageState extends State<ReviewPage> {
       appBar: AppBar(
         title: Text(
           l10n?.reviewPageTitle ?? 'Review Wrong Questions',
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         backgroundColor: const Color(0xFF337AB7),
         actions: [
@@ -97,36 +96,44 @@ class _ReviewPageState extends State<ReviewPage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _records.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.check_circle_outline, size: 64, color: Colors.green),
-                      const SizedBox(height: 16),
-                      Text(
-                        l10n?.noWrongQuestionsFound ?? 'No wrong questions found.',
-                        style: const TextStyle(fontSize: 18, color: Colors.black54),
-                      ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text(l10n?.backToSelection ?? 'Back to Selection'),
-                      ),
-                    ],
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.check_circle_outline,
+                    size: 64,
+                    color: Colors.green,
                   ),
-                )
-              : ListView.builder(
-                  padding: const EdgeInsets.all(16.0),
-                  itemCount: _records.length,
-                  itemBuilder: (context, index) {
-                    final record = _records[index];
-                    return _buildRecordCard(record, index + 1, l10n);
-                  },
-                ),
+                  const SizedBox(height: 16),
+                  Text(
+                    l10n?.noWrongQuestionsFound ?? 'No wrong questions found.',
+                    style: const TextStyle(fontSize: 18, color: Colors.black54),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(l10n?.backToSelection ?? 'Back to Selection'),
+                  ),
+                ],
+              ),
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.all(16.0),
+              itemCount: _records.length,
+              itemBuilder: (context, index) {
+                final record = _records[index];
+                return _buildRecordCard(record, index + 1, l10n);
+              },
+            ),
     );
   }
 
-  Widget _buildRecordCard(WrongQuestionRecord record, int displayIndex, AppLocalizations? l10n) {
+  Widget _buildRecordCard(
+    WrongQuestionRecord record,
+    int displayIndex,
+    AppLocalizations? l10n,
+  ) {
     final q = record.question;
     final vehicleLabel = record.vehicle == 'car'
         ? (l10n?.vehicleCar ?? 'Car')
@@ -150,7 +157,9 @@ class _ReviewPageState extends State<ReviewPage> {
               children: [
                 Chip(
                   avatar: Icon(
-                    record.vehicle == 'car' ? Icons.directions_car : Icons.two_wheeler,
+                    record.vehicle == 'car'
+                        ? Icons.directions_car
+                        : Icons.two_wheeler,
                     size: 18,
                   ),
                   label: Text('$vehicleLabel ($langLabel)'),
@@ -171,12 +180,18 @@ class _ReviewPageState extends State<ReviewPage> {
               children: [
                 Text(
                   '$displayIndex. ',
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
                 Expanded(
                   child: Text(
                     q.text,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ],
@@ -185,8 +200,13 @@ class _ReviewPageState extends State<ReviewPage> {
             if (q.architecture != null && q.architecture!.isNotEmpty) ...[
               const SizedBox(height: 4),
               Text(
-                l10n?.architecture(q.architecture!) ?? 'Architecture: ${q.architecture}',
-                style: const TextStyle(fontSize: 12, color: Colors.black54, fontStyle: FontStyle.italic),
+                l10n?.architecture(q.architecture!) ??
+                    'Architecture: ${q.architecture}',
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.black54,
+                  fontStyle: FontStyle.italic,
+                ),
               ),
             ],
 
@@ -205,7 +225,8 @@ class _ReviewPageState extends State<ReviewPage> {
                       fit: BoxFit.contain,
                       errorBuilder: (context, error, stackTrace) {
                         return Text(
-                          l10n?.failedToLoadImage(imgPath) ?? 'Failed to load image: $imgPath',
+                          l10n?.failedToLoadImage(imgPath) ??
+                              'Failed to load image: $imgPath',
                           style: const TextStyle(color: Colors.red),
                         );
                       },
@@ -258,8 +279,8 @@ class _ReviewPageState extends State<ReviewPage> {
                             color: isCorrectOption
                                 ? Colors.green.shade800
                                 : isUserWrongOption
-                                    ? Colors.red.shade800
-                                    : Colors.black87,
+                                ? Colors.red.shade800
+                                : Colors.black87,
                           ),
                         ),
                         Expanded(
@@ -269,13 +290,17 @@ class _ReviewPageState extends State<ReviewPage> {
                               color: isCorrectOption
                                   ? Colors.green.shade800
                                   : isUserWrongOption
-                                      ? Colors.red.shade800
-                                      : Colors.black87,
+                                  ? Colors.red.shade800
+                                  : Colors.black87,
                             ),
                           ),
                         ),
                         if (isCorrectOption)
-                          const Icon(Icons.check_circle, color: Colors.green, size: 18)
+                          const Icon(
+                            Icons.check_circle,
+                            color: Colors.green,
+                            size: 18,
+                          )
                         else if (isUserWrongOption)
                           const Icon(Icons.cancel, color: Colors.red, size: 18),
                       ],
@@ -303,7 +328,8 @@ class _ReviewPageState extends State<ReviewPage> {
                   const SizedBox(width: 16),
                 ],
                 Text(
-                  l10n?.correctFeedback(q.answer) ?? 'Correct answer: ${q.answer}',
+                  l10n?.correctFeedback(q.answer) ??
+                      'Correct answer: ${q.answer}',
                   style: const TextStyle(
                     color: Color(0xFF3C763D),
                     fontWeight: FontWeight.bold,

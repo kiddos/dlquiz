@@ -50,16 +50,16 @@ void main() {
     await DatabaseHelper.instance.closeDatabase();
   });
 
-  testWidgets('AdBanner renders properly in traditional Chinese and English', (WidgetTester tester) async {
+  testWidgets('AdBanner renders properly in traditional Chinese and English', (
+    WidgetTester tester,
+  ) async {
     // Chinese locale
     await tester.pumpWidget(
       const MaterialApp(
         locale: Locale('zh'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: Scaffold(
-          body: AdBanner(),
-        ),
+        home: Scaffold(body: AdBanner()),
       ),
     );
     await tester.pump();
@@ -80,20 +80,23 @@ void main() {
         locale: Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: Scaffold(
-          body: AdBanner(),
-        ),
+        home: Scaffold(body: AdBanner()),
       ),
     );
     await tester.pump();
 
     expect(find.byKey(const Key('ad_banner')), findsOneWidget);
     expect(find.text('AD'), findsOneWidget);
-    expect(find.text('Driver Master App - Ace Your License Exam!'), findsOneWidget);
+    expect(
+      find.text('Driver Master App - Ace Your License Exam!'),
+      findsOneWidget,
+    );
     expect(find.text('Learn More'), findsOneWidget);
   });
 
-  testWidgets('AdBanner is displayed on SelectionPage', (WidgetTester tester) async {
+  testWidgets('AdBanner is displayed on SelectionPage', (
+    WidgetTester tester,
+  ) async {
     await tester.runAsync(() async {
       await tester.pumpWidget(
         MaterialApp(
@@ -120,10 +123,7 @@ void main() {
           locale: Locale('zh'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: QuizPage(
-            selectedVehicle: 'motorcycle',
-            selectedLang: 'zh',
-          ),
+          home: QuizPage(selectedVehicle: 'motorcycle', selectedLang: 'zh'),
         ),
       );
       await Future.delayed(const Duration(milliseconds: 100));
@@ -133,7 +133,9 @@ void main() {
     expect(find.byKey(const Key('ad_banner')), findsOneWidget);
   });
 
-  testWidgets('AdBanner is displayed on ReviewPage', (WidgetTester tester) async {
+  testWidgets('AdBanner is displayed on ReviewPage', (
+    WidgetTester tester,
+  ) async {
     await tester.runAsync(() async {
       await tester.pumpWidget(
         const MaterialApp(

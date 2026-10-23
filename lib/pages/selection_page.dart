@@ -148,7 +148,11 @@ class _SelectionPageState extends State<SelectionPage> {
             flexibleSpace: Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color(0xFF1E40AF), Color(0xFF2563EB), Color(0xFF0284C7)],
+                  colors: [
+                    Color(0xFF1E40AF),
+                    Color(0xFF2563EB),
+                    Color(0xFF0284C7),
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -163,7 +167,11 @@ class _SelectionPageState extends State<SelectionPage> {
                     color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.school_rounded, color: Colors.white, size: 20),
+                  child: const Icon(
+                    Icons.school_rounded,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                 ),
                 const SizedBox(width: 10),
                 Text(
@@ -186,25 +194,29 @@ class _SelectionPageState extends State<SelectionPage> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  Color(0xFFEEF4FF),
-                  Color(0xFFF8FAFC),
-                  Colors.white,
-                ],
+                colors: [Color(0xFFEEF4FF), Color(0xFFF8FAFC), Colors.white],
                 stops: [0.0, 0.4, 1.0],
               ),
             ),
             child: Center(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 24.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20.0,
+                  vertical: 24.0,
+                ),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 460),
                   child: Card(
                     elevation: 8,
-                    shadowColor: const Color(0xFF1D4ED8).withValues(alpha: 0.12),
+                    shadowColor: const Color(
+                      0xFF1D4ED8,
+                    ).withValues(alpha: 0.12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(24),
-                      side: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
+                      side: const BorderSide(
+                        color: Color(0xFFE2E8F0),
+                        width: 1,
+                      ),
                     ),
                     color: Colors.white,
                     child: Padding(
@@ -221,18 +233,25 @@ class _SelectionPageState extends State<SelectionPage> {
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: isMotorcycle
-                                      ? const [Color(0xFFFB923C), Color(0xFFEA580C)]
-                                      : const [Color(0xFF38BDF8), Color(0xFF2563EB)],
+                                      ? const [
+                                          Color(0xFFFB923C),
+                                          Color(0xFFEA580C),
+                                        ]
+                                      : const [
+                                          Color(0xFF38BDF8),
+                                          Color(0xFF2563EB),
+                                        ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: (isMotorcycle
-                                            ? const Color(0xFFEA580C)
-                                            : const Color(0xFF2563EB))
-                                        .withValues(alpha: 0.32),
+                                    color:
+                                        (isMotorcycle
+                                                ? const Color(0xFFEA580C)
+                                                : const Color(0xFF2563EB))
+                                            .withValues(alpha: 0.32),
                                     blurRadius: 18,
                                     offset: const Offset(0, 8),
                                   ),
@@ -265,11 +284,16 @@ class _SelectionPageState extends State<SelectionPage> {
                           // Subtitle Chip
                           Center(
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 5,
+                              ),
                               decoration: BoxDecoration(
                                 color: const Color(0xFFEFF6FF),
                                 borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: const Color(0xFFDBEAFE)),
+                                border: Border.all(
+                                  color: const Color(0xFFDBEAFE),
+                                ),
                               ),
                               child: Text(
                                 l10n?.appSubtitle ??
@@ -292,27 +316,37 @@ class _SelectionPageState extends State<SelectionPage> {
                                 icon: Icons.menu_book_rounded,
                                 color: const Color(0xFFD97706),
                                 bgColor: const Color(0xFFFEF3C7),
-                                label: _selectedLang == 'zh' ? '完整題庫' : 'Official',
+                                label: _selectedLang == 'zh'
+                                    ? '完整題庫'
+                                    : 'Official',
                               ),
                               const SizedBox(width: 8),
                               _buildFeatureBadge(
                                 icon: Icons.timer_outlined,
                                 color: const Color(0xFF059669),
                                 bgColor: const Color(0xFFD1FAE5),
-                                label: _selectedLang == 'zh' ? '模擬測驗' : 'Mock Test',
+                                label: _selectedLang == 'zh'
+                                    ? '模擬測驗'
+                                    : 'Mock Test',
                               ),
                               const SizedBox(width: 8),
                               _buildFeatureBadge(
                                 icon: Icons.verified_rounded,
                                 color: const Color(0xFF7C3AED),
                                 bgColor: const Color(0xFFEDE9FE),
-                                label: _selectedLang == 'zh' ? '即時計分' : 'Instant Score',
+                                label: _selectedLang == 'zh'
+                                    ? '即時計分'
+                                    : 'Instant Score',
                               ),
                             ],
                           ),
 
                           const SizedBox(height: 20),
-                          const Divider(height: 1, thickness: 1, color: Color(0xFFF1F5F9)),
+                          const Divider(
+                            height: 1,
+                            thickness: 1,
+                            color: Color(0xFFF1F5F9),
+                          ),
                           const SizedBox(height: 18),
 
                           // Section Header
@@ -332,7 +366,8 @@ class _SelectionPageState extends State<SelectionPage> {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                l10n?.selectVehicleAndLanguage ?? 'Select Vehicle and Language',
+                                l10n?.selectVehicleAndLanguage ??
+                                    'Select Vehicle and Language',
                                 style: const TextStyle(
                                   fontSize: 14.5,
                                   fontWeight: FontWeight.w700,
@@ -346,7 +381,10 @@ class _SelectionPageState extends State<SelectionPage> {
                           // Vehicle Selection Card
                           AnimatedContainer(
                             duration: const Duration(milliseconds: 250),
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
                             decoration: BoxDecoration(
                               color: isMotorcycle
                                   ? const Color(0xFFFFF7ED)
@@ -360,10 +398,11 @@ class _SelectionPageState extends State<SelectionPage> {
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: (isMotorcycle
-                                          ? const Color(0xFFF97316)
-                                          : const Color(0xFF3B82F6))
-                                      .withValues(alpha: 0.08),
+                                  color:
+                                      (isMotorcycle
+                                              ? const Color(0xFFF97316)
+                                              : const Color(0xFF3B82F6))
+                                          .withValues(alpha: 0.08),
                                   blurRadius: 8,
                                   offset: const Offset(0, 2),
                                 ),
@@ -392,7 +431,8 @@ class _SelectionPageState extends State<SelectionPage> {
                                 const SizedBox(width: 14),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         l10n?.vehicleLabel ?? 'Vehicle: ',
@@ -415,7 +455,9 @@ class _SelectionPageState extends State<SelectionPage> {
                                                 : const Color(0xFF2563EB),
                                             size: 20,
                                           ),
-                                          borderRadius: BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
                                           elevation: 4,
                                           items: [
                                             DropdownMenuItem(
@@ -430,9 +472,11 @@ class _SelectionPageState extends State<SelectionPage> {
                                                   ),
                                                   const SizedBox(width: 8),
                                                   Text(
-                                                    l10n?.vehicleMotorcycle ?? 'Motorcycle',
+                                                    l10n?.vehicleMotorcycle ??
+                                                        'Motorcycle',
                                                     style: const TextStyle(
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       fontSize: 15,
                                                       color: Color(0xFF0F172A),
                                                     ),
@@ -446,7 +490,8 @@ class _SelectionPageState extends State<SelectionPage> {
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
                                                   const Icon(
-                                                    Icons.directions_car_rounded,
+                                                    Icons
+                                                        .directions_car_rounded,
                                                     size: 19,
                                                     color: Color(0xFF2563EB),
                                                   ),
@@ -454,7 +499,8 @@ class _SelectionPageState extends State<SelectionPage> {
                                                   Text(
                                                     l10n?.vehicleCar ?? 'Car',
                                                     style: const TextStyle(
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       fontSize: 15,
                                                       color: Color(0xFF0F172A),
                                                     ),
@@ -482,7 +528,10 @@ class _SelectionPageState extends State<SelectionPage> {
 
                           // Language Selection Card
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
                             decoration: BoxDecoration(
                               color: const Color(0xFFFAF5FF),
                               borderRadius: BorderRadius.circular(16),
@@ -492,7 +541,9 @@ class _SelectionPageState extends State<SelectionPage> {
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color(0xFF8B5CF6).withValues(alpha: 0.08),
+                                  color: const Color(
+                                    0xFF8B5CF6,
+                                  ).withValues(alpha: 0.08),
                                   blurRadius: 8,
                                   offset: const Offset(0, 2),
                                 ),
@@ -515,7 +566,8 @@ class _SelectionPageState extends State<SelectionPage> {
                                 const SizedBox(width: 14),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         l10n?.languageLabel ?? 'Language: ',
@@ -536,7 +588,9 @@ class _SelectionPageState extends State<SelectionPage> {
                                             color: Color(0xFF7C3AED),
                                             size: 20,
                                           ),
-                                          borderRadius: BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
                                           elevation: 4,
                                           items: [
                                             DropdownMenuItem(
@@ -551,9 +605,11 @@ class _SelectionPageState extends State<SelectionPage> {
                                                   ),
                                                   const SizedBox(width: 8),
                                                   Text(
-                                                    l10n?.languageChinese ?? 'Traditional Chinese',
+                                                    l10n?.languageChinese ??
+                                                        'Traditional Chinese',
                                                     style: const TextStyle(
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       fontSize: 15,
                                                       color: Color(0xFF0F172A),
                                                     ),
@@ -573,9 +629,11 @@ class _SelectionPageState extends State<SelectionPage> {
                                                   ),
                                                   const SizedBox(width: 8),
                                                   Text(
-                                                    l10n?.languageEnglish ?? 'English',
+                                                    l10n?.languageEnglish ??
+                                                        'English',
                                                     style: const TextStyle(
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       fontSize: 15,
                                                       color: Color(0xFF0F172A),
                                                     ),
@@ -589,7 +647,9 @@ class _SelectionPageState extends State<SelectionPage> {
                                               setState(() {
                                                 _selectedLang = val;
                                               });
-                                              widget.onLocaleChanged(Locale(val));
+                                              widget.onLocaleChanged(
+                                                Locale(val),
+                                              );
                                             }
                                           },
                                         ),
@@ -604,17 +664,25 @@ class _SelectionPageState extends State<SelectionPage> {
 
                           // Keyboard Hint Pill
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 8,
+                            ),
                             decoration: BoxDecoration(
                               color: const Color(0xFFF8FAFC),
                               borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: const Color(0xFFE2E8F0)),
+                              border: Border.all(
+                                color: const Color(0xFFE2E8F0),
+                              ),
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: const Color(0xFFE2E8F0),
                                     borderRadius: BorderRadius.circular(5),
@@ -633,7 +701,10 @@ class _SelectionPageState extends State<SelectionPage> {
                                   child: Text(
                                     l10n?.pressEnterToStart ??
                                         'Press Enter or click below to start quiz',
-                                    style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Color(0xFF64748B),
+                                    ),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
@@ -647,14 +718,20 @@ class _SelectionPageState extends State<SelectionPage> {
                             height: 52,
                             decoration: BoxDecoration(
                               gradient: const LinearGradient(
-                                colors: [Color(0xFF2563EB), Color(0xFF1D4ED8), Color(0xFF1E40AF)],
+                                colors: [
+                                  Color(0xFF2563EB),
+                                  Color(0xFF1D4ED8),
+                                  Color(0xFF1E40AF),
+                                ],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
                               borderRadius: BorderRadius.circular(14),
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color(0xFF2563EB).withValues(alpha: 0.38),
+                                  color: const Color(
+                                    0xFF2563EB,
+                                  ).withValues(alpha: 0.38),
                                   blurRadius: 16,
                                   offset: const Offset(0, 6),
                                 ),
@@ -701,10 +778,15 @@ class _SelectionPageState extends State<SelectionPage> {
                               decoration: BoxDecoration(
                                 color: const Color(0xFFFFF1F2),
                                 borderRadius: BorderRadius.circular(14),
-                                border: Border.all(color: const Color(0xFFFECDD3), width: 1.5),
+                                border: Border.all(
+                                  color: const Color(0xFFFECDD3),
+                                  width: 1.5,
+                                ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFFE11D48).withValues(alpha: 0.08),
+                                    color: const Color(
+                                      0xFFE11D48,
+                                    ).withValues(alpha: 0.08),
                                     blurRadius: 8,
                                     offset: const Offset(0, 2),
                                   ),

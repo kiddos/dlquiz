@@ -48,89 +48,100 @@ void main() {
     await DatabaseHelper.instance.closeDatabase();
   });
 
-  testWidgets('SelectionPage does not show review button when no wrong questions exist', (WidgetTester tester) async {
-    await tester.runAsync(() async {
-      await tester.pumpWidget(
-        MaterialApp(
-          locale: const Locale('zh'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: SelectionPage(
-            currentLocale: const Locale('zh'),
-            onLocaleChanged: (_) {},
+  testWidgets(
+    'SelectionPage does not show review button when no wrong questions exist',
+    (WidgetTester tester) async {
+      await tester.runAsync(() async {
+        await tester.pumpWidget(
+          MaterialApp(
+            locale: const Locale('zh'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: SelectionPage(
+              currentLocale: const Locale('zh'),
+              onLocaleChanged: (_) {},
+            ),
           ),
-        ),
-      );
-      await Future.delayed(const Duration(milliseconds: 100));
-    });
-    await tester.pump();
-
-    expect(find.byKey(const Key('start_quiz_button')), findsOneWidget);
-    expect(find.byKey(const Key('review_button')), findsNothing);
-  });
-
-  testWidgets('SelectionPage shows review button when wrong questions exist in DB', (WidgetTester tester) async {
-    final sampleQ = Question(
-      num: '1',
-      answer: 'O',
-      text: 'Test question',
-      type: QuestionType.yesNo,
-    );
-
-    await tester.runAsync(() async {
-      await DatabaseHelper.instance.saveWrongQuestions(
-        [sampleQ],
-        vehicle: 'motorcycle',
-        lang: 'zh',
-        userAnswers: {sampleQ: 'X'},
-      );
-
-      await tester.pumpWidget(
-        MaterialApp(
-          locale: const Locale('zh'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: SelectionPage(
-            currentLocale: const Locale('zh'),
-            onLocaleChanged: (_) {},
-          ),
-        ),
-      );
-      await Future.delayed(const Duration(milliseconds: 100));
-    });
-    await tester.pump();
-
-    expect(find.byKey(const Key('review_button')), findsOneWidget);
-  });
-
-  testWidgets('Pressing Enter key or Start Quiz button in SelectionPage navigates to QuizPage', (WidgetTester tester) async {
-    await tester.runAsync(() async {
-      await tester.pumpWidget(
-        const DriverLicenseQuizApp(
-          initialLocale: Locale('zh'),
-        ),
-      );
-      await Future.delayed(const Duration(milliseconds: 100));
-    });
-    await tester.pump();
-
-    expect(find.byType(SelectionPage), findsOneWidget);
-
-    // Tap start quiz button
-    final startButton = find.byKey(const Key('start_quiz_button'));
-    expect(startButton, findsOneWidget);
-
-    await tester.runAsync(() async {
-      await tester.tap(startButton);
+        );
+        await Future.delayed(const Duration(milliseconds: 100));
+      });
       await tester.pump();
-      await Future.delayed(const Duration(milliseconds: 500));
-    });
-    await tester.pump();
 
-    expect(find.byType(QuizPage), findsOneWidget);
-  });
+      expect(find.byKey(const Key('start_quiz_button')), findsOneWidget);
+      expect(find.byKey(const Key('review_button')), findsNothing);
+    },
+  );
 
-  testWidgets('ReviewPage renders wrong questions and allows clearing them', (WidgetTester tester) async {
+  testWidgets(
+    'SelectionPage shows review button when wrong questions exist in DB',
+    (WidgetTester tester) async {
+      final sampleQ = Question(
+        num: '1',
+        answer: 'O',
+        text: 'Test question',
+        type: QuestionType.yesNo,
+      );
+
+      await tester.runAsync(() async {
+        await DatabaseHelper.instance.saveWrongQuestions(
+          [sampleQ],
+          vehicle: 'motorcycle',
+          lang: 'zh',
+          userAnswers: {sampleQ: 'X'},
+        );
+
+        await tester.pumpWidget(
+          MaterialApp(
+            locale: const Locale('zh'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: SelectionPage(
+              currentLocale: const Locale('zh'),
+              onLocaleChanged: (_) {},
+            ),
+          ),
+        );
+        await Future.delayed(const Duration(milliseconds: 100));
+      });
+      await tester.pump();
+
+      expect(find.byKey(const Key('review_button')), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'Pressing Enter key or Start Quiz button in SelectionPage navigates to QuizPage',
+    (WidgetTester tester) async {
+      await tester.runAsync(() async {
+        await tester.pumpWidget(
+          const DriverLicenseQuizApp(initialLocale: Locale('zh')),
+        );
+        await Future.delayed(const Duration(milliseconds: 100));
+      });
+      await tester.pump();
+
+      expect(find.byType(SelectionPage), findsOneWidget);
+
+      // Tap start quiz button
+      final startButton = find.byKey(const Key('start_quiz_button'));
+      expect(startButton, findsOneWidget);
+      await tester.ensureVisible(startButton);
+      await tester.pumpAndSettle();
+
+      await tester.runAsync(() async {
+        await tester.tap(startButton);
+        await tester.pump();
+        await Future.delayed(const Duration(milliseconds: 500));
+      });
+      await tester.pump();
+
+      expect(find.byType(QuizPage), findsOneWidget);
+    },
+  );
+
+  testWidgets('ReviewPage renders wrong questions and allows clearing them', (
+    WidgetTester tester,
+  ) async {
     final wrongQ = Question(
       num: '5',
       answer: '2',

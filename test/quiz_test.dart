@@ -15,7 +15,10 @@ void main() {
 夜間行車，如來車不變換近光燈，可以用遠光燈來報復增加
 安全。 11
 ''';
-      final questions = QuestionParser.parseQuestions(sample, QuestionType.yesNo);
+      final questions = QuestionParser.parseQuestions(
+        sample,
+        QuestionType.yesNo,
+      );
       expect(questions.length, 3);
       expect(questions[0].num, '001');
       expect(questions[0].answer, 'O');
@@ -39,7 +42,10 @@ void main() {
 (2)優良駕駛技術(3)良好生活習慣。
 11
 ''';
-      final questions = QuestionParser.parseQuestions(sample, QuestionType.multipleChoice);
+      final questions = QuestionParser.parseQuestions(
+        sample,
+        QuestionType.multipleChoice,
+      );
       expect(questions.length, 2);
       expect(questions[0].num, '001');
       expect(questions[0].answer, '3');
@@ -47,11 +53,16 @@ void main() {
 
       expect(questions[1].num, '002');
       expect(questions[1].answer, '1');
-      expect(questions[1].text, '防衛駕駛就是(1)能儘力採取合理謹慎行為加以防止車禍發生(2)優良駕駛技術(3)良好生活習慣。');
+      expect(
+        questions[1].text,
+        '防衛駕駛就是(1)能儘力採取合理謹慎行為加以防止車禍發生(2)優良駕駛技術(3)良好生活習慣。',
+      );
     });
 
-    test('Parses v2 JSON question format with options and images correctly', () {
-      const sampleJson = '''
+    test(
+      'Parses v2 JSON question format with options and images correctly',
+      () {
+        const sampleJson = '''
 [
   {
     "num": 1,
@@ -86,76 +97,93 @@ void main() {
 ]
 ''';
 
-      final questions = QuestionParser.parseJsonQuestions(
-        sampleJson,
-        assetPrefix: 'questions/v2/car/zh',
-      );
+        final questions = QuestionParser.parseJsonQuestions(
+          sampleJson,
+          assetPrefix: 'questions/v2/car/zh',
+        );
 
-      expect(questions.length, 2);
-      expect(questions[0].num, '1');
-      expect(questions[0].answer, '2');
-      expect(questions[0].rawAnswer, '(2)');
-      expect(questions[0].page, 1);
-      expect(questions[0].architecture, '架構一 正確觀念與態度');
-      expect(questions[0].options?['2'], '禁止四輪以上汽車及機車進入。');
-      expect(questions[0].images, ['questions/v2/car/zh/images/1.png']);
+        expect(questions.length, 2);
+        expect(questions[0].num, '1');
+        expect(questions[0].answer, '2');
+        expect(questions[0].rawAnswer, '(2)');
+        expect(questions[0].page, 1);
+        expect(questions[0].architecture, '架構一 正確觀念與態度');
+        expect(questions[0].options?['2'], '禁止四輪以上汽車及機車進入。');
+        expect(questions[0].images, ['questions/v2/car/zh/images/1.png']);
 
-      expect(questions[1].num, '4');
-      expect(questions[1].answer, '3');
-      expect(questions[1].images, isEmpty);
-    });
+        expect(questions[1].num, '4');
+        expect(questions[1].answer, '3');
+        expect(questions[1].images, isEmpty);
+      },
+    );
   });
 
   group('QuizState tests', () {
-    test('Handles uncompleted questions and calculates scores correctly with l10n', () {
-      final yesNoList = List.generate(
-        15,
-        (i) => Question(num: '${i + 1}', answer: 'O', text: 'Q${i + 1}', type: QuestionType.yesNo),
-      );
-      final multipleList = List.generate(
-        15,
-        (i) => Question(num: '${i + 1}', answer: '1', text: 'MQ${i + 1}', type: QuestionType.multipleChoice),
-      );
+    test(
+      'Handles uncompleted questions and calculates scores correctly with l10n',
+      () {
+        final yesNoList = List.generate(
+          15,
+          (i) => Question(
+            num: '${i + 1}',
+            answer: 'O',
+            text: 'Q${i + 1}',
+            type: QuestionType.yesNo,
+          ),
+        );
+        final multipleList = List.generate(
+          15,
+          (i) => Question(
+            num: '${i + 1}',
+            answer: '1',
+            text: 'MQ${i + 1}',
+            type: QuestionType.multipleChoice,
+          ),
+        );
 
-      final state = QuizState.generateQuiz(yesNoList, multipleList);
-      expect(state.section1Questions.length, 10);
-      expect(state.section2Questions.length, 10);
+        final state = QuizState.generateQuiz(yesNoList, multipleList);
+        expect(state.section1Questions.length, 10);
+        expect(state.section2Questions.length, 10);
 
-      // Attempt submit without answers (English l10n)
-      final l10nEn = AppLocalizationsEn();
-      bool success = state.submitAnswers(l10nEn);
-      expect(success, false);
-      expect(state.errorMessage, contains('Submit Failed! [Section 1] Question 1 is not answered'));
+        // Attempt submit without answers (English l10n)
+        final l10nEn = AppLocalizationsEn();
+        bool success = state.submitAnswers(l10nEn);
+        expect(success, false);
+        expect(
+          state.errorMessage,
+          contains('Submit Failed! [Section 1] Question 1 is not answered'),
+        );
 
-      // Attempt submit without answers (Chinese l10n)
-      final l10nZh = AppLocalizationsZh();
-      success = state.submitAnswers(l10nZh);
-      expect(success, false);
-      expect(state.errorMessage, contains('提交失敗！[第一部分] 第 1 題未回答'));
+        // Attempt submit without answers (Chinese l10n)
+        final l10nZh = AppLocalizationsZh();
+        success = state.submitAnswers(l10nZh);
+        expect(success, false);
+        expect(state.errorMessage, contains('提交失敗！[第一部分] 第 1 題未回答'));
 
-      // Fill section 1 answers
-      for (int i = 1; i <= 10; i++) {
-        state.section1UserAnswers[i] = 'O';
-      }
+        // Fill section 1 answers
+        for (int i = 1; i <= 10; i++) {
+          state.section1UserAnswers[i] = 'O';
+        }
 
-      success = state.submitAnswers(l10nZh);
-      expect(success, false);
-      expect(state.errorMessage, contains('提交失敗！[第二部分] 第 1 題未回答'));
+        success = state.submitAnswers(l10nZh);
+        expect(success, false);
+        expect(state.errorMessage, contains('提交失敗！[第二部分] 第 1 題未回答'));
 
-      // Fill section 2 answers (8 correct, 2 wrong)
-      for (int i = 1; i <= 8; i++) {
-        state.section2UserAnswers[i] = '1';
-      }
-      state.section2UserAnswers[9] = '2';
-      state.section2UserAnswers[10] = '2';
+        // Fill section 2 answers (8 correct, 2 wrong)
+        for (int i = 1; i <= 8; i++) {
+          state.section2UserAnswers[i] = '1';
+        }
+        state.section2UserAnswers[9] = '2';
+        state.section2UserAnswers[10] = '2';
 
-      success = state.submitAnswers(l10nZh);
-      expect(success, true);
-      expect(state.errorMessage, isNull);
-      expect(state.totalCorrect, 18); // 10 + 8
-      expect(state.totalQuestions, 20);
-      expect(state.isPassed, true); // 18/20 = 90% >= 80%
-    });
+        success = state.submitAnswers(l10nZh);
+        expect(success, true);
+        expect(state.errorMessage, isNull);
+        expect(state.totalCorrect, 18); // 10 + 8
+        expect(state.totalQuestions, 20);
+        expect(state.isPassed, true); // 18/20 = 90% >= 80%
+      },
+    );
 
     test('Generates quiz from single list of json questions', () {
       final questions = List.generate(

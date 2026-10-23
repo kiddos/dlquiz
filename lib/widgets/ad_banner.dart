@@ -60,10 +60,7 @@ class AdBanner extends StatelessWidget {
                     isEn
                         ? 'Sponsor Ad: Practice test tips & real simulation'
                         : '贊助商廣告：考照技巧解析與即時模擬測驗',
-                    style: const TextStyle(
-                      fontSize: 10,
-                      color: Colors.black54,
-                    ),
+                    style: const TextStyle(fontSize: 10, color: Colors.black54),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -76,7 +73,10 @@ class AdBanner extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF337AB7),
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 shape: RoundedRectangleBorder(
@@ -87,9 +87,7 @@ class AdBanner extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
-                      isEn
-                          ? 'Thank you for supporting our ads!'
-                          : '感謝您支持廣告！',
+                      isEn ? 'Thank you for supporting our ads!' : '感謝您支持廣告！',
                     ),
                     duration: const Duration(seconds: 2),
                   ),

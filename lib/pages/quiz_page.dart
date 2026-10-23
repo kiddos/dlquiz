@@ -143,7 +143,10 @@ class _QuizPageState extends State<QuizPage> {
       appBar: AppBar(
         title: Text(
           l10n?.appTitle ?? 'Driver License Quiz',
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         backgroundColor: const Color(0xFF337AB7),
         actions: [
@@ -206,11 +209,15 @@ class _QuizPageState extends State<QuizPage> {
               children: [
                 Text(
                   l10n?.appTitle ?? 'Driver License Quiz',
-                  style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  l10n?.appSubtitle ?? 'Driver\'s License Written Test Question Bank',
+                  l10n?.appSubtitle ??
+                      'Driver\'s License Written Test Question Bank',
                   style: const TextStyle(fontSize: 14, color: Colors.black54),
                 ),
                 const SizedBox(height: 12),
@@ -231,7 +238,9 @@ class _QuizPageState extends State<QuizPage> {
                           items: [
                             DropdownMenuItem(
                               value: 'motorcycle',
-                              child: Text(l10n?.vehicleMotorcycle ?? 'Motorcycle'),
+                              child: Text(
+                                l10n?.vehicleMotorcycle ?? 'Motorcycle',
+                              ),
                             ),
                             DropdownMenuItem(
                               value: 'car',
@@ -261,7 +270,9 @@ class _QuizPageState extends State<QuizPage> {
                           items: [
                             DropdownMenuItem(
                               value: 'zh',
-                              child: Text(l10n?.languageChinese ?? 'Traditional Chinese'),
+                              child: Text(
+                                l10n?.languageChinese ?? 'Traditional Chinese',
+                              ),
                             ),
                             DropdownMenuItem(
                               value: 'en',
@@ -350,7 +361,10 @@ class _QuizPageState extends State<QuizPage> {
             children: [
               Text(
                 l10n?.submitYourAnswer ?? 'Submit Your Answer: ',
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
 
               Row(
@@ -464,7 +478,8 @@ class _QuizPageState extends State<QuizPage> {
             if (q.architecture != null && q.architecture!.isNotEmpty) ...[
               const SizedBox(height: 4),
               Text(
-                l10n?.architecture(q.architecture!) ?? 'Architecture: ${q.architecture}',
+                l10n?.architecture(q.architecture!) ??
+                    'Architecture: ${q.architecture}',
                 style: const TextStyle(
                   fontSize: 12,
                   color: Colors.black54,
@@ -473,7 +488,8 @@ class _QuizPageState extends State<QuizPage> {
               ),
             ],
             Text(
-              l10n?.questionInDatabase(q.num) ?? 'Question ${q.num} in database',
+              l10n?.questionInDatabase(q.num) ??
+                  'Question ${q.num} in database',
               style: const TextStyle(fontSize: 12, color: Colors.black54),
             ),
 
@@ -492,7 +508,8 @@ class _QuizPageState extends State<QuizPage> {
                       fit: BoxFit.contain,
                       errorBuilder: (context, error, stackTrace) {
                         return Text(
-                          l10n?.failedToLoadImage(imgPath) ?? 'Failed to load image: $imgPath',
+                          l10n?.failedToLoadImage(imgPath) ??
+                              'Failed to load image: $imgPath',
                           style: const TextStyle(color: Colors.red),
                         );
                       },
@@ -506,83 +523,83 @@ class _QuizPageState extends State<QuizPage> {
 
             // Options selector
             if (q.type == QuestionType.yesNo) ...[
-              Row(
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Radio<String>(
-                        value: 'O',
-                        groupValue: selectedAnswer,
-                        onChanged: (val) {
-                          setState(() {
-                            userAnswers[qIndex] = val!;
-                          });
-                        },
-                      ),
-                      const Text('O'),
-                    ],
-                  ),
-                  const SizedBox(width: 16),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Radio<String>(
-                        value: 'X',
-                        groupValue: selectedAnswer,
-                        onChanged: (val) {
-                          setState(() {
-                            userAnswers[qIndex] = val!;
-                          });
-                        },
-                      ),
-                      const Text('X'),
-                    ],
-                  ),
-                ],
+              RadioGroup<String>(
+                groupValue: selectedAnswer,
+                onChanged: (val) {
+                  if (val != null) {
+                    setState(() {
+                      userAnswers[qIndex] = val;
+                    });
+                  }
+                },
+                child: Row(
+                  children: const [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Radio<String>(value: 'O'),
+                        Text('O'),
+                      ],
+                    ),
+                    SizedBox(width: 16),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Radio<String>(value: 'X'),
+                        Text('X'),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ] else ...[
               // Multiple Choice Options (1, 2, 3)
-              Column(
-                children: ['1', '2', '3'].map((optKey) {
-                  final optionText = q.options?[optKey];
-                  return InkWell(
-                    onTap: () {
-                      setState(() {
-                        userAnswers[qIndex] = optKey;
-                      });
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2.0),
-                      child: Row(
-                        children: [
-                          Radio<String>(
-                            value: optKey,
-                            groupValue: selectedAnswer,
-                            onChanged: (val) {
-                              setState(() {
-                                userAnswers[qIndex] = val!;
-                              });
-                            },
-                          ),
-                          Text(
-                            '($optKey) ',
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          if (optionText != null && optionText.isNotEmpty)
-                            Expanded(
-                              child: Text(
-                                optionText,
-                                style: const TextStyle(fontSize: 14),
+              RadioGroup<String>(
+                groupValue: selectedAnswer,
+                onChanged: (val) {
+                  if (val != null) {
+                    setState(() {
+                      userAnswers[qIndex] = val;
+                    });
+                  }
+                },
+                child: Column(
+                  children: ['1', '2', '3'].map((optKey) {
+                    final optionText = q.options?[optKey];
+                    return InkWell(
+                      onTap: () {
+                        setState(() {
+                          userAnswers[qIndex] = optKey;
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2.0),
+                        child: Row(
+                          children: [
+                            Radio<String>(value: optKey),
+                            Text(
+                              '($optKey) ',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
                               ),
-                            )
-                          else
-                            Text(l10n?.optionLabel(optKey) ?? 'Option $optKey'),
-                        ],
+                            ),
+                            if (optionText != null && optionText.isNotEmpty)
+                              Expanded(
+                                child: Text(
+                                  optionText,
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              )
+                            else
+                              Text(
+                                l10n?.optionLabel(optKey) ?? 'Option $optKey',
+                              ),
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                }).toList(),
+                    );
+                  }).toList(),
+                ),
               ),
             ],
 
@@ -590,8 +607,10 @@ class _QuizPageState extends State<QuizPage> {
               const SizedBox(height: 6),
               Text(
                 isCorrect
-                    ? (l10n?.correctFeedback(q.answer) ?? 'correct! answer: ${q.answer}')
-                    : (l10n?.wrongFeedback(q.answer) ?? 'wrong! answer: ${q.answer}'),
+                    ? (l10n?.correctFeedback(q.answer) ??
+                          'correct! answer: ${q.answer}')
+                    : (l10n?.wrongFeedback(q.answer) ??
+                          'wrong! answer: ${q.answer}'),
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,

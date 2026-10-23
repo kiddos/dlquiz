@@ -24,18 +24,16 @@ class DatabaseHelper {
   }
 
   Future<Database> _initDatabase({String? customPath}) async {
-    if (!kIsWeb && (Platform.isLinux || Platform.isWindows || Platform.isMacOS)) {
+    if (!kIsWeb &&
+        (Platform.isLinux || Platform.isWindows || Platform.isMacOS)) {
       sqfliteFfiInit();
       databaseFactory = databaseFactoryFfi;
     }
 
-    final dbPath = customPath ?? join(await getDatabasesPath(), 'scooter_driver_quiz.db');
+    final dbPath =
+        customPath ?? join(await getDatabasesPath(), 'scooter_driver_quiz.db');
 
-    return await openDatabase(
-      dbPath,
-      version: 1,
-      onCreate: _onCreate,
-    );
+    return await openDatabase(dbPath, version: 1, onCreate: _onCreate);
   }
 
   Future<void> _onCreate(Database db, int version) async {
@@ -84,7 +82,9 @@ class DatabaseHelper {
 
   Future<int> getWrongQuestionCount() async {
     final db = await database;
-    final result = await db.rawQuery('SELECT COUNT(*) as count FROM wrong_questions');
+    final result = await db.rawQuery(
+      'SELECT COUNT(*) as count FROM wrong_questions',
+    );
     if (result.isNotEmpty) {
       final val = result.first['count'];
       if (val is int) return val;

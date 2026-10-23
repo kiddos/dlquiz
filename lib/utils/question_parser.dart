@@ -2,10 +2,18 @@ import 'dart:convert';
 import '../models/question.dart';
 
 class QuestionParser {
-  static List<Question> parseJsonQuestions(String jsonContent, {String assetPrefix = ''}) {
+  static List<Question> parseJsonQuestions(
+    String jsonContent, {
+    String assetPrefix = '',
+  }) {
     final List<dynamic> jsonList = jsonDecode(jsonContent);
     return jsonList
-        .map((item) => Question.fromJson(item as Map<String, dynamic>, assetPrefix: assetPrefix))
+        .map(
+          (item) => Question.fromJson(
+            item as Map<String, dynamic>,
+            assetPrefix: assetPrefix,
+          ),
+        )
         .toList();
   }
 
@@ -67,12 +75,9 @@ class QuestionParser {
       }
       questionText = questionText.replaceAll(' ', '');
 
-      questions.add(Question(
-        num: num,
-        answer: ans,
-        text: questionText,
-        type: type,
-      ));
+      questions.add(
+        Question(num: num, answer: ans, text: questionText, type: type),
+      );
     }
 
     return questions;

@@ -4,7 +4,8 @@ enum QuestionType { yesNo, multipleChoice }
 
 class Question {
   final String num;
-  final String answer; // 'O' / 'X' for yesNo, '1' / '2' / '3' for multipleChoice
+  final String
+  answer; // 'O' / 'X' for yesNo, '1' / '2' / '3' for multipleChoice
   final String? rawAnswer;
   final int? page;
   final String? architecture;
@@ -27,7 +28,10 @@ class Question {
     this.assignedIndex,
   });
 
-  factory Question.fromJson(Map<String, dynamic> json, {String assetPrefix = ''}) {
+  factory Question.fromJson(
+    Map<String, dynamic> json, {
+    String assetPrefix = '',
+  }) {
     final numVal = json['num']?.toString() ?? '';
     final answerVal = json['answer']?.toString() ?? '';
     final rawAns = json['raw_answer']?.toString();
@@ -46,7 +50,9 @@ class Question {
     if (json['images'] is List) {
       for (var img in (json['images'] as List)) {
         final imgStr = img.toString();
-        if (assetPrefix.isNotEmpty && !imgStr.startsWith('http') && !imgStr.startsWith('assets/')) {
+        if (assetPrefix.isNotEmpty &&
+            !imgStr.startsWith('http') &&
+            !imgStr.startsWith('assets/')) {
           imageList.add('$assetPrefix/$imgStr');
         } else {
           imageList.add(imgStr);
@@ -72,7 +78,11 @@ class Question {
     );
   }
 
-  Map<String, dynamic> toDbMap({required String vehicle, required String lang, String? userAnswer}) {
+  Map<String, dynamic> toDbMap({
+    required String vehicle,
+    required String lang,
+    String? userAnswer,
+  }) {
     return {
       'vehicle': vehicle,
       'lang': lang,

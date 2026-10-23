@@ -19,7 +19,9 @@ class WrongQuestionRecord {
 
   factory WrongQuestionRecord.fromDbMap(Map<String, dynamic> map) {
     return WrongQuestionRecord(
-      id: map['id'] is int ? map['id'] as int : int.tryParse(map['id'].toString()) ?? 0,
+      id: map['id'] is int
+          ? map['id'] as int
+          : int.tryParse(map['id'].toString()) ?? 0,
       vehicle: map['vehicle']?.toString() ?? '',
       lang: map['lang']?.toString() ?? '',
       question: Question.fromDbMap(map),

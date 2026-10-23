@@ -15,12 +15,12 @@ class QuizState {
   int section1Correct = 0;
   int section2Correct = 0;
 
-  QuizState({
-    required this.section1Questions,
-    required this.section2Questions,
-  });
+  QuizState({required this.section1Questions, required this.section2Questions});
 
-  factory QuizState.generateFromQuestions(List<Question> allQuestions, {Random? random}) {
+  factory QuizState.generateFromQuestions(
+    List<Question> allQuestions, {
+    Random? random,
+  }) {
     final rng = random ?? Random();
     final list = List<Question>.from(allQuestions)..shuffle(rng);
     final count = min(20, list.length);
@@ -37,13 +37,14 @@ class QuizState {
       sec2[i].assignedIndex = i + 1;
     }
 
-    return QuizState(
-      section1Questions: sec1,
-      section2Questions: sec2,
-    );
+    return QuizState(section1Questions: sec1, section2Questions: sec2);
   }
 
-  factory QuizState.generateQuiz(List<Question> allYesNo, List<Question> allMultiple, {Random? random}) {
+  factory QuizState.generateQuiz(
+    List<Question> allYesNo,
+    List<Question> allMultiple, {
+    Random? random,
+  }) {
     if (allYesNo.isNotEmpty && allMultiple.isNotEmpty) {
       final rng = random ?? Random();
 
@@ -59,7 +60,10 @@ class QuizState {
 
       return QuizState(
         section1Questions: selectRandom(allYesNo, min(10, allYesNo.length)),
-        section2Questions: selectRandom(allMultiple, min(10, allMultiple.length)),
+        section2Questions: selectRandom(
+          allMultiple,
+          min(10, allMultiple.length),
+        ),
       );
     } else {
       final combined = [...allYesNo, ...allMultiple];
@@ -70,11 +74,15 @@ class QuizState {
   /// Returns 0 if all answered in section, or index of first unanswered question (1-based).
   int checkSectionDone(int section) {
     final questions = section == 1 ? section1Questions : section2Questions;
-    final userAnswers = section == 1 ? section1UserAnswers : section2UserAnswers;
+    final userAnswers = section == 1
+        ? section1UserAnswers
+        : section2UserAnswers;
 
     for (int i = 0; i < questions.length; i++) {
       int qNum = i + 1;
-      if (!userAnswers.containsKey(qNum) || userAnswers[qNum] == null || userAnswers[qNum]!.isEmpty) {
+      if (!userAnswers.containsKey(qNum) ||
+          userAnswers[qNum] == null ||
+          userAnswers[qNum]!.isEmpty) {
         return qNum;
       }
     }
@@ -126,6 +134,7 @@ class QuizState {
 
   int get totalCorrect => section1Correct + section2Correct;
   int get totalQuestions => section1Questions.length + section2Questions.length;
-  double get scorePercentage => totalQuestions > 0 ? (totalCorrect / totalQuestions) : 0.0;
+  double get scorePercentage =>
+      totalQuestions > 0 ? (totalCorrect / totalQuestions) : 0.0;
   bool get isPassed => scorePercentage >= 0.80;
 }

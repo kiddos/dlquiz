@@ -50,10 +50,7 @@ class _DriverLicenseQuizAppState extends State<DriverLicenseQuizApp> {
         ),
         useMaterial3: true,
       ),
-      home: SelectionPage(
-        currentLocale: _locale,
-        onLocaleChanged: _setLocale,
-      ),
+      home: SelectionPage(currentLocale: _locale, onLocaleChanged: _setLocale),
     );
   }
 }

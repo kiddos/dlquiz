@@ -49,7 +49,9 @@ void main() {
     await DatabaseHelper.instance.closeDatabase();
   });
 
-  testWidgets('SelectionPage allows selecting vehicle and language', (WidgetTester tester) async {
+  testWidgets('SelectionPage allows selecting vehicle and language', (
+    WidgetTester tester,
+  ) async {
     String selectedLangCode = 'zh';
 
     await tester.runAsync(() async {
@@ -74,7 +76,9 @@ void main() {
     expect(find.text('繁體中文'), findsOneWidget);
 
     // Switch vehicle to car
-    await tester.tap(find.byKey(const Key('vehicle_dropdown')));
+    final vehicleDropdown = find.byKey(const Key('vehicle_dropdown'));
+    await tester.ensureVisible(vehicleDropdown);
+    await tester.tap(vehicleDropdown);
     await tester.pumpAndSettle();
     await tester.tap(find.text('汽車').last);
     await tester.pumpAndSettle();
@@ -82,7 +86,9 @@ void main() {
     expect(find.text('汽車'), findsOneWidget);
 
     // Switch language to English
-    await tester.tap(find.byKey(const Key('language_dropdown')));
+    final languageDropdown = find.byKey(const Key('language_dropdown'));
+    await tester.ensureVisible(languageDropdown);
+    await tester.tap(languageDropdown);
     await tester.pumpAndSettle();
     await tester.tap(find.text('English').last);
     await tester.pumpAndSettle();
@@ -90,7 +96,9 @@ void main() {
     expect(selectedLangCode, equals('en'));
   });
 
-  testWidgets('SelectionPage responds to Enter key and opens QuizPage', (WidgetTester tester) async {
+  testWidgets('SelectionPage responds to Enter key and opens QuizPage', (
+    WidgetTester tester,
+  ) async {
     await tester.runAsync(() async {
       await tester.pumpWidget(
         MaterialApp(
